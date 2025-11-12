@@ -3,8 +3,13 @@
 ## Prerequisites
 
 * [Python 3.10+](https://www.python.org/)
+* [PostgreSQL 17.6+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 
 ## Setup (Windows)
+
+0. Install and configure Python and PostgreSQL
+
+   **Note:** When installing PostgreSQL, remember the password you set for the postgres user.
 
 1. Create and activate a virtual environment
 
@@ -23,6 +28,34 @@
 
    ```bash
    pip install -r requirements.txt
+   ```
+
+4. Set up the database
+
+   1. Open pgAdmin and connect to your PostgreSQL server
+
+      ![pgAdmin - Connect to Server](./imgs/pgadmin_connect_to_server.png)
+
+   2. Right-click on Login/Group Roles and select Create → Login/Group Role
+   3. In the General tab, set name to `alphard`
+
+      ![pgAdmin - Create Login/Group Role](./imgs/pgadmin_create_login_group_role.png)
+
+   4. In the Definition tab, set password to `password`
+   5. In the Privileges tab, disable *Inherit rights from the parent role?*, and enable *Can login?* and *Create databases?*
+
+      ![pgAdmin - Create Login/Group Role - Alter Privileges](./imgs/pgadmin_create_login_group_role_privileges.png)
+
+   6. Click the save button
+   7. Right-click on Databases and select Create → Database
+   8. Set database and owner both to `alphard`, and click the save button
+
+      ![pgAdmin - Create Database](./imgs/pgadmin_create_database.png)
+
+5. Perform database migration
+
+   ```bash
+   python manage.py migrate
    ```
 
 ## Setup (Ubuntu)
@@ -52,3 +85,24 @@
    ```bash
    pip install -r requirements.txt
    ```
+
+## Usage
+
+After completing development setup, start the application as follows.
+
+```bash
+python manage.py runserver
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| **DEBUG** | Shows detailed error information | True |
+| **SECRET_KEY** | Cryptographic signing key | django-insecure-... |
+| **ALLOWED_HOSTS** | Hosts allowed to serve the application | [] |
+| **DB_NAME** | Database name | alphard |
+| **DB_USER** | Database user | alphard |
+| **DB_PASSWORD** | Database password | password |
+| **DB_HOST** | Database server host | localhost |
+| **DB_PORT** | Database server port | 5432 |
