@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-* [Python 3.10+](https://www.python.org/)
+* [Python 3.10+](https://www.python.org/downloads/)
 * [PostgreSQL 17.6+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 
 ## Setup (Windows)
@@ -64,7 +64,8 @@
 
    ```bash
    sudo apt update
-   sudo apt install python3 python3-venv
+   sudo apt install python3 python3-venv postgresql
+   sudo systemctl enable --now postgresql
    ```
 
 1. Create and activate a virtual environment
@@ -84,6 +85,33 @@
 
    ```bash
    pip install -r requirements.txt
+   ```
+
+4. Set up the database
+
+   1. Connect to your PostgreSQL server
+
+      ```bash
+      sudo -u postgres psql
+      ```
+
+   2. Execute the following SQL queries to create login role and database
+
+      ```sql
+      CREATE ROLE alphard WITH
+         LOGIN
+         CREATEDB
+         NOINHERIT
+         PASSWORD 'password';
+
+      CREATE DATABASE alphard WITH
+         OWNER = alphard;
+      ```
+
+5. Perform database migration
+
+   ```bash
+   python manage.py migrate
    ```
 
 ## Usage
