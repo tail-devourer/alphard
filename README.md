@@ -4,10 +4,11 @@
 
 * [Python 3.10+](https://www.python.org/downloads/)
 * [PostgreSQL 17.6+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
+* [Node.js v22.21.1+](https://nodejs.org/en/download)
 
 ## Setup (Windows)
 
-0. Install and configure Python and PostgreSQL
+0. Install prerequisites
 
    **Note:** When installing PostgreSQL, remember the password you set for the postgres user.
 
@@ -58,13 +59,19 @@
    python manage.py migrate
    ```
 
+6. Install tailwind css dependencies
+
+   ```bash
+   python manage.py install
+   ```
+
 ## Setup (Ubuntu)
 
 0. Install system dependencies
 
    ```bash
    sudo apt update
-   sudo apt install python3 python3-venv postgresql
+   sudo apt install python3 python3-venv postgresql nodejs npm gcc build-essential python3-dev libpq-dev
    sudo systemctl enable --now postgresql
    ```
 
@@ -108,15 +115,43 @@
          OWNER = alphard;
       ```
 
+   3. Exit PostgreSQL
+
+      ```sql
+      \q
+      ```
+
 5. Perform database migration
 
    ```bash
-   python manage.py migrate
+   python3 manage.py migrate
    ```
+
+6. Install tailwind css
+
+   1. Create `.env` file and add the following line
+
+      ```
+      NPM_BIN_PATH=/usr/bin/npm
+      ```
+
+   2. Install dependencies
+
+      ```bash
+      python3 manage.py install
+      ```
 
 ## Usage
 
 After completing development setup, start the application as follows.
+
+1. Start the tailwind css development server
+
+```bash
+python manage.py tailwind start
+```
+
+2. In a separate terminal, start the django development server
 
 ```bash
 python manage.py runserver
@@ -134,3 +169,4 @@ python manage.py runserver
 | **DB_PASSWORD** | Database password | password |
 | **DB_HOST** | Database server host | localhost |
 | **DB_PORT** | Database server port | 5432 |
+| **NPM_BIN_PATH** | Path to npm executable | C:\Program Files\nodejs\npm.cmd |
