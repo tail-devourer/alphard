@@ -11,21 +11,27 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, True)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e'
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # Application definition
@@ -74,8 +80,12 @@ WSGI_APPLICATION = 'alphard.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME', default='alphard'),
+        'USER': env('DB_USER', default='alphard'),
+        'PASSWORD': env('DB_PASSWORD', default='password'),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env.int('DB_PORT', default=5432),
     }
 }
 
