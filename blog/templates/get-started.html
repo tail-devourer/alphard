@@ -3,4 +3,10 @@
 {% block title %}Get Started - Alphard{% endblock %}
 
 {% block content %}
+  <div class="flex justify-center items-center h-screen">
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+    </form>
+  </div>
 {% endblock %}

@@ -3,7 +3,10 @@
     <a href="/" class="btn btn-ghost btn-lg font-[Charm] text-2xl">Alphard</a>
   </div>
   <div class="flex-none flex space-x-2">
-    <a href="/sign-in" class="btn btn-ghost">Sign In</a>
-    <a href="/get-started" class="btn btn-neutral">Get Started</a>
+    {% if user.is_authenticated %}
+    {% else %}
+      <a href="/sign-in" class="btn btn-ghost">Sign In</a>
+      <a href="/get-started" class="btn btn-neutral">Get Started</a>
+    {% endif %}
   </div>
 </div>

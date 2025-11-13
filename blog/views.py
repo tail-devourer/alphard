@@ -38,4 +38,6 @@ class GetStartedView(View):
         if request.user.is_authenticated:
             return redirect("home")
 
-        return render(request, "get-started.html", {})
+        return render(request, "get-started.html", {
+            "form": forms.UserCreationForm(),
+        })
