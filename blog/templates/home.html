@@ -4,4 +4,13 @@
 
 {% block content %}
   {% include "navbar.html" %}
+
+  <div class="flex justify-center px-8 py-12 lg:px-32">
+    <form class="w-92 join">
+      <input placeholder="Search by people or posts" class="input join-item">
+      <button type="submit" class="btn btn-neutral join-item">
+        {% include "icons/magnifying_glass.svg" with fill="#fff" size="20px" %}
+      </button>
+    </form>
+  </div>
 {% endblock %}
