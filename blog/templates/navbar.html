@@ -4,18 +4,25 @@
   </div>
   <div class="flex-none flex items-center space-x-2">
     {% if user.is_authenticated %}
-      <div>
-        <img
-          src="{{ user.avatar.url }}"
-          alt="{{ user.full_name|default:user.username }}"
-          class="h-1/2 w-1/2" {# Doesn't work #}
-          style="height:50%;width:50%" {# Works #}
-        >
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" class="avatar btn btn-circle ring-2 ring-offset-2 ring-neutral-200">
+          <img src="{{ user.avatar.url }}" alt="{{ user.full_name|default:user.username }}" class="rounded-full">
+        </div>
+        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box w-48 shadow">
+          {% if user.is_staff %}
+            <li><a href="/admin" class="w-44 btn btn-ghost">Admin Dashboard</a></li>
+          {% endif %}
+          <li>
+            <form method="POST" action="{% url "logout" %}" class="p-0">
+              {% csrf_token %}
+              <button class="w-44 btn btn-ghost">Logout</button>
+            </form>
+          </li>
+        </ul>
       </div>
-      <div>{{ user.full_name|default:user.username }}</div>
     {% else %}
-      <a href="/sign-in" class="btn btn-ghost">Sign In</a>
-      <a href="/get-started" class="btn btn-neutral">Get Started</a>
+      <a href="{% url "sign_in" %}" class="btn btn-ghost">Sign In</a>
+      <a href="{% url "get_started" %}" class="btn btn-neutral">Get Started</a>
     {% endif %}
   </div>
 </div>
