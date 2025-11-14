@@ -1,6 +1,7 @@
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import forms, login, logout
+from .forms import CustomUserCreationForm
 
 
 class HomeView(View):
@@ -39,7 +40,7 @@ class GetStartedView(View):
             return redirect("home")
 
         return render(request, "get-started.html", {
-            "form": forms.UserCreationForm(),
+            "form": CustomUserCreationForm(),
         })
 
 
