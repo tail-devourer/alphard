@@ -2,8 +2,17 @@
   <div class="flex-1">
     <a href="/" class="btn btn-ghost btn-lg font-[Charm] text-2xl">Alphard</a>
   </div>
-  <div class="flex-none flex space-x-2">
+  <div class="flex-none flex items-center space-x-2">
     {% if user.is_authenticated %}
+      <div>
+        <img
+          src="{{ user.avatar.url }}"
+          alt="{{ user.full_name|default:user.username }}"
+          class="h-1/2 w-1/2" {# Doesn't work #}
+          style="height:50%;width:50%" {# Works #}
+        >
+      </div>
+      <div>{{ user.full_name|default:user.username }}</div>
     {% else %}
       <a href="/sign-in" class="btn btn-ghost">Sign In</a>
       <a href="/get-started" class="btn btn-neutral">Get Started</a>

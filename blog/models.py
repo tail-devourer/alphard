@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 
 class User(AbstractUser):
     first_name = None
@@ -14,3 +14,11 @@ class User(AbstractUser):
 
     def get_short_name(self):
         return self.full_name.strip()
+
+
+class CustomGroup(Group):
+
+    class Meta:
+        proxy = True
+        verbose_name = _("group")
+        verbose_name_plural = _("groups")
