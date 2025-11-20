@@ -62,10 +62,24 @@
 6. Install tailwind css dependencies
 
    ```bash
-   python manage.py install
+   python manage.py tailwind install
    ```
 
-7. Create an admin user
+7. Configure email
+
+   1. Create `.env` file and add the following lines
+
+      ```
+      EMAIL_HOST_USER=
+      EMAIL_HOST_PASSWORD=
+      ```
+
+   2. Go to [Mailtrap](https://mailtrap.io/) and sign up if you don't already have an account
+   3. On the dashboard, click _Start Testing_ under _Email Sandbox_
+   4. Locate _Credentials_ under My Sandbox -> Integration -> SMTP
+   5. Copy the _Username_ and _Password_ values into your `.env` file
+
+8. Create an admin user
 
    ```bash
    python manage.py createsuperuser
@@ -146,10 +160,24 @@
    2. Install dependencies
 
       ```bash
-      python3 manage.py install
+      python3 manage.py tailwind install
       ```
 
-7. Create an admin user
+7. Configure email
+
+   1. Add the following lines to `.env` file
+
+      ```
+      EMAIL_HOST_USER=
+      EMAIL_HOST_PASSWORD=
+      ```
+
+   2. Go to [Mailtrap](https://mailtrap.io/) and sign up if you don't already have an account
+   3. On the dashboard, click _Start Testing_ under _Email Sandbox_
+   4. Locate _Credentials_ under My Sandbox -> Integration -> SMTP
+   5. Copy the _Username_ and _Password_ values into your `.env` file
+
+8. Create an admin user
 
    ```bash
    python manage.py createsuperuser
@@ -184,3 +212,10 @@ python manage.py runserver
 | **DB_HOST** | Database server host | localhost |
 | **DB_PORT** | Database server port | 5432 |
 | **NPM_BIN_PATH** | Path to npm executable | C:\Program Files\nodejs\npm.cmd |
+| EMAIL_HOST | SMTP server host | sandbox.smtp.mailtrap.io |
+| EMAIL_PORT | SMTP server port | 587 |
+| EMAIL_USE_TLS | Use TLS for sending emails | True |
+| EMAIL_USE_SSL | USE SSL for sending emails | False |
+| EMAIL_HOST_USER | SMTP username | - |
+| EMAIL_HOST_PASSWORD | SMTP password | - |
+| DEFAULT_FROM_EMAIL | Default from address for outgoing emails | admin@alphard.test |

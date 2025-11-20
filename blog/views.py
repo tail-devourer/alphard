@@ -50,10 +50,24 @@ class GetStartedView(View):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            return redirect("home")
+
+            request.session["confirmUser"] = user.email
+
+            return redirect("get_started_done")
 
         return render(request, "get-started.html", {
             "form": form,
+        })
+
+
+class GetStartedDoneView(View):
+
+    def get(self, request):
+        if not request.session.get("confirmUser"):
+            return redirect("get_started")
+
+        return render(request, "get-started-done.html", {
+            "email": request.session.get("confirmUser")
         })
 
 
