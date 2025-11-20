@@ -2,6 +2,7 @@
 
 ## Prerequisites
 
+* [Git](https://gitforwindows.org/)
 * [Python 3.10+](https://www.python.org/downloads/)
 * [PostgreSQL 17.6+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 * [Node.js v22.21.1+](https://nodejs.org/en/download)
@@ -12,26 +13,33 @@
 
    **Note:** When installing PostgreSQL, remember the password you set for the postgres user.
 
-1. Create and activate a virtual environment
+1. Clone repository
+
+   ```bash
+   git clone git@github.com:tail-devourer/alphard.git
+   cd alphard
+   ```
+
+2. Create and activate a virtual environment
 
    ```bash
    python -m venv venv
    .\venv\Scripts\activate
    ```
 
-2. Upgrade `pip`
+3. Upgrade `pip`
 
    ```bash
    python -m pip install --upgrade pip
    ```
 
-3. Install dependencies
+4. Install dependencies
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Set up the database
+5. Set up the database
 
    1. Open pgAdmin and connect to your PostgreSQL server
 
@@ -53,19 +61,19 @@
 
       ![pgAdmin - Create Database](./imgs/pgadmin_create_database.png)
 
-5. Perform database migration
+6. Perform database migration
 
    ```bash
    python manage.py migrate
    ```
 
-6. Install tailwind css dependencies
+7. Install tailwind css dependencies
 
    ```bash
    python manage.py tailwind install
    ```
 
-7. Configure email
+8. Configure email
 
    1. Create `.env` file and add the following lines
 
@@ -79,11 +87,28 @@
    4. Locate _Credentials_ under My Sandbox -> Integration -> SMTP
    5. Copy the _Username_ and _Password_ values into your `.env` file
 
-8. Create an admin user
+9. Create an admin user
 
    ```bash
    python manage.py createsuperuser
    ```
+
+10. Start the development server(s)
+
+    1. Start the tailwind css development server
+
+       ```bash
+       python manage.py tailwind start
+       ```
+
+    2. In a separate terminal, start the django development server
+
+       ```bash
+       .\venv\Scripts\activate
+       python manage.py runserver
+       ```
+
+    3. Visit [http://localhost:8000](http://localhost:8000) in the browser of your choice
 
 ## Setup (Ubuntu)
 
@@ -91,32 +116,39 @@
 
    ```bash
    sudo apt update
-   sudo apt install -y python3 python3-venv postgresql gcc build-essential python3-dev libpq-dev curl
+   sudo apt install -y gcc build-essential libpq-dev python3 python3-venv python3-dev postgresql git curl
    curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
    sudo apt install -y nodejs
    sudo systemctl enable --now postgresql
    ```
 
-1. Create and activate a virtual environment
+1. Clone repository
+
+   ```bash
+   git clone git@github.com:tail-devourer/alphard.git
+   cd alphard
+   ```
+
+2. Create and activate a virtual environment
 
    ```bash
    python3 -m venv venv
    source ./venv/bin/activate
    ```
 
-2. Upgrade `pip`
+3. Upgrade `pip`
 
    ```bash
    python3 -m pip install --upgrade pip
    ```
 
-3. Install dependencies
+4. Install dependencies
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Set up the database
+5. Set up the database
 
    1. Connect to your PostgreSQL server
 
@@ -143,13 +175,13 @@
       \q
       ```
 
-5. Perform database migration
+6. Perform database migration
 
    ```bash
    python3 manage.py migrate
    ```
 
-6. Install tailwind css
+7. Install tailwind css
 
    1. Create `.env` file and add the following line
 
@@ -163,7 +195,7 @@
       python3 manage.py tailwind install
       ```
 
-7. Configure email
+8. Configure email
 
    1. Add the following lines to `.env` file
 
@@ -177,29 +209,28 @@
    4. Locate _Credentials_ under My Sandbox -> Integration -> SMTP
    5. Copy the _Username_ and _Password_ values into your `.env` file
 
-8. Create an admin user
+9. Create an admin user
 
    ```bash
    python3 manage.py createsuperuser
    ```
 
-## Usage
+10. Start the development server(s)
 
-After completing development setup, start the application as follows.
+    1. Start the tailwind css development server
 
-1. Start the tailwind css development server
+       ```bash
+       python3 manage.py tailwind start
+       ```
 
-```bash
-python manage.py tailwind start
-```
+    2. In a separate terminal, start the django development server
 
-2. In a separate terminal, start the django development server
+       ```bash
+       source ./venv/bin/activate
+       python3 manage.py runserver
+       ```
 
-```bash
-python manage.py runserver
-```
-
-__Note:__ On Ubuntu, you should use `python3` instead of `python` for the above commands.
+    3. Visit [http://localhost:8000](http://localhost:8000) in the browser of your choice
 
 ## Environment Variables
 
@@ -214,10 +245,10 @@ __Note:__ On Ubuntu, you should use `python3` instead of `python` for the above 
 | **DB_HOST** | Database server host | localhost |
 | **DB_PORT** | Database server port | 5432 |
 | **NPM_BIN_PATH** | Path to npm executable | C:\Program Files\nodejs\npm.cmd |
-| EMAIL_HOST | SMTP server host | sandbox.smtp.mailtrap.io |
-| EMAIL_PORT | SMTP server port | 587 |
-| EMAIL_USE_TLS | Use TLS for sending emails | True |
-| EMAIL_USE_SSL | USE SSL for sending emails | False |
-| EMAIL_HOST_USER | SMTP username | - |
-| EMAIL_HOST_PASSWORD | SMTP password | - |
-| DEFAULT_FROM_EMAIL | Default from address for outgoing emails | admin@alphard.test |
+| **EMAIL_HOST** | SMTP server host | sandbox.smtp.mailtrap.io |
+| **EMAIL_PORT** | SMTP server port | 587 |
+| **EMAIL_USE_TLS** | Use TLS for sending emails | True |
+| **EMAIL_USE_SSL** | USE SSL for sending emails | False |
+| **EMAIL_HOST_USER** | SMTP username | - |
+| **EMAIL_HOST_PASSWORD** | SMTP password | - |
+| **DEFAULT_FROM_EMAIL** | Default from address for outgoing emails | admin@alphard.test |
