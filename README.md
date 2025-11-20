@@ -180,7 +180,7 @@
 8. Create an admin user
 
    ```bash
-   python manage.py createsuperuser
+   python3 manage.py createsuperuser
    ```
 
 ## Usage
@@ -198,6 +198,8 @@ python manage.py tailwind start
 ```bash
 python manage.py runserver
 ```
+
+__Note:__ On Ubuntu, you should use `python3` instead of `python` for the above commands.
 
 ## Environment Variables
 
