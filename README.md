@@ -77,7 +77,9 @@
 
    ```bash
    sudo apt update
-   sudo apt install python3 python3-venv postgresql nodejs npm gcc build-essential python3-dev libpq-dev
+   sudo apt install -y python3 python3-venv postgresql gcc build-essential python3-dev libpq-dev curl
+   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+   sudo apt install -y nodejs
    sudo systemctl enable --now postgresql
    ```
 
