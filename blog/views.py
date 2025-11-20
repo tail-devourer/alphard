@@ -47,7 +47,9 @@ class GetStartedView(View):
         form = CustomUserCreationForm(data=request.POST)
 
         if form.is_valid():
-            pass
+            user = form.save()
+            login(request, user)
+            return redirect("home")
 
         return render(request, "get-started.html", {
             "form": form,
