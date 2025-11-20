@@ -65,6 +65,12 @@
    python manage.py install
    ```
 
+7. Create an admin user
+
+   ```bash
+   python manage.py createsuperuser
+   ```
+
 ## Setup (Ubuntu)
 
 0. Install system dependencies
@@ -140,6 +146,12 @@
       ```bash
       python3 manage.py install
       ```
+
+7. Create an admin user
+
+   ```bash
+   python manage.py createsuperuser
+   ```
 
 ## Usage
 
