@@ -43,6 +43,16 @@ class GetStartedView(View):
             "form": CustomUserCreationForm(),
         })
 
+    def post(self, request):
+        form = CustomUserCreationForm(data=request.POST)
+
+        if form.is_valid():
+            pass
+
+        return render(request, "get-started.html", {
+            "form": form,
+        })
+
 
 class LogoutView(View):
 

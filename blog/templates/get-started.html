@@ -3,10 +3,98 @@
 {% block title %}Get Started - Alphard{% endblock %}
 
 {% block content %}
-  <div class="flex justify-center items-center h-screen">
-    <form method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-    </form>
+  <div class="flex w-full">
+    <div class="flex-1 hidden lg:flex flex-col justify-center h-screen space-y-4.5 bg-gray-100 px-10 xl:px-20">
+      <div class="font-[Charm] text-6xl">Alphard</div>
+      <div class="font-['Delius_Swash_Caps'] text-lg">A place for the things that keep you awake.</div>
+    </div>
+    <div class="flex flex-1 justify-center items-start py-20 lg:py-0 lg:items-center h-screen px-10 xl:px-20">
+      <form method="POST" class="w-72 lg:w-lg flex flex-col space-y-4.5">
+        <div class="font-[Charm] text-4xl text-center pb-2 lg:hidden">Alphard</div>
+        {% csrf_token %}
+        <div class="flex flex-col lg:flex-row space-x-2 space-y-4.5 lg:space-y-0">
+          <div class="w-full flex flex-1 flex-col space-y-2 floating-label">
+            <span>Full Name (Optional)</span>
+            <input placeholder="Full Name (Optional)" name="full_name" value="{{ form.full_name.value|default:"" }}" autocomplete="name" maxLength="150" class="input">
+            {% for error in form.full_name.errors %}
+              <div class="alert alert-error">
+                {% include "icons/error.svg" %}
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+          <div class="flex flex-1 flex-col space-y-2 floating-label">
+            <span>Username</span>
+            <div class="tooltip">
+              <div class="tooltip-content text-xs">
+                {{ form.username.help_text }}
+              </div>
+              <input placeholder="Username" name="username" value="{{ form.username.value|default:"" }}" autocomplete="username" maxLength="150" class="input" required>
+            </div>
+            {% for error in form.username.errors %}
+              <div class="alert alert-error">
+                {% include "icons/error.svg" %}
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="w-full flex flex-col space-y-2 floating-label">
+          <span>Email Address</span>
+          <input placeholder="Email Address" name="email" value="{{ form.email.value|default:"" }}" autocomplete="email" maxLength="254" class="input w-full" autofocus required>
+          {% for error in form.email.errors %}
+            <div class="alert alert-error">
+              {% include "icons/error.svg" %}
+              {{ error }}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="flex flex-col lg:flex-row space-x-2 space-y-4.5 lg:space-y-0">
+          <div class="w-full flex flex-1 flex-col space-y-2 floating-label">
+            <span>Password</span>
+            <div class="tooltip">
+              <div class="tooltip-content text-xs text-left">
+                {{ form.password1.help_text|safe }}
+              </div>
+              <input type="password" placeholder="Password" name="password1" autocomplete="new-password" class="input" required>
+            </div>
+            {% for error in form.password1.errors %}
+              <div class="alert alert-error">
+                {% include "icons/error.svg" %}
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+          <div class="flex flex-1 flex-col space-y-2 floating-label">
+            <span>Confirm Password</span>
+            <input type="password" placeholder="Confirm Password" name="password2" class="input" required>
+            {% for error in form.password2.errors %}
+              <div class="alert alert-error">
+                {% include "icons/error.svg" %}
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% if form.non_field_errors %}
+          <div class="flex flex-col space-y-1">
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-error">
+                {% include "icons/error.svg" %}
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="flex flex-col-reverse lg:flex-row space-x-2">
+          <div class="w-full flex-1">
+            <a href="{% url "sign_in" %}" class="btn w-full">Already have an account?</a>
+          </div>
+          <div class="flex-1 pb-2 lg:pb-0">
+            <button type="submit" class="btn btn-neutral w-full">Sign Up</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock %}

@@ -9,7 +9,7 @@
       {% csrf_token %}
       <div class="flex flex-col space-y-2 floating-label">
         <span>Username</span>
-        <input placeholder="Username" name="username" autocapitalize="none" autocomplete="username" maxLength="150" class="input" autofocus required>
+        <input placeholder="Username" name="username" value="{{ form.username.value|default:"" }}" autocapitalize="none" autocomplete="username" maxLength="150" class="input" autofocus required>
         {% for error in form.username.errors %}
           <div class="alert alert-error">
             {% include "icons/error.svg" %}
