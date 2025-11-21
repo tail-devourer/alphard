@@ -3,13 +3,14 @@
     <a href="/" class="btn btn-ghost btn-lg font-[Charm] text-2xl">Alphard</a>
   </div>
   <div class="flex-none flex items-center space-x-2">
-    {% if user.is_authenticated %}
+    {% if request.user.is_authenticated %}
       <div class="dropdown dropdown-end">
         <div tabindex="0" class="avatar btn btn-circle ring-2 ring-offset-2 ring-neutral-200">
-          <img src="{{ user.avatar.url }}" alt="{{ user.full_name|default:user.username }}" class="rounded-full">
+          <img src="{{ request.user.avatar.url }}" alt="{{ request.user.full_name|default:request.user.username }}" class="rounded-full">
         </div>
         <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box w-48 shadow">
-          {% if user.is_staff %}
+          <li><a href="{% url "profile" username=request.user.username %}" class="w-44 btn btn-ghost">My Profile</a></li>
+          {% if request.user.is_staff %}
             <li><a href="/admin" class="w-44 btn btn-ghost">Admin Dashboard</a></li>
           {% endif %}
           <li>

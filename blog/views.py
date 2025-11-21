@@ -1,5 +1,5 @@
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import forms, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -86,7 +86,7 @@ class GetStartedDoneView(View):
         send_confirmation_email.delay(user.full_name, user.email, confirmation_url)
 
         return render(request, "get-started-done.html", {
-            "email": email
+            "email": email,
         })
 
     def post(self, request):
@@ -121,3 +121,15 @@ class LogoutView(View):
     def post(self, request):
         logout(request)
         return redirect("home")
+
+
+class ProfileView(View):
+
+    def get(self, request, username):
+        User = get_user_model()
+        user = get_object_or_404(User, username=username)
+
+        return render(request, "profile.html", {
+            "user": user,
+        })
+

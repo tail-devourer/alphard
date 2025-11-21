@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if user.full_name %}{{ user.full_name }}{% else %}u/{{ user.username }}{% endif %} - Alphard
+{% endblock %}
+
+{% block content %}
+  {% include "navbar.html" %}
+{% endblock %}
