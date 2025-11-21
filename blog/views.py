@@ -89,6 +89,10 @@ class GetStartedDoneView(View):
             "email": email
         })
 
+    def post(self, request):
+        request.session.pop("confirmUser")
+        return redirect("get_started")
+
 
 class LogoutView(View):
 
