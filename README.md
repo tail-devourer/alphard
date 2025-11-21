@@ -6,12 +6,43 @@
 * [Python 3.10+](https://www.python.org/downloads/)
 * [PostgreSQL 17.6+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 * [Node.js v22.21.1+](https://nodejs.org/en/download)
+* [Redis v8.2.3+](https://github.com/redis-windows/redis-windows/releases)
+* [WinRAR](https://www.win-rar.com/download.html?&L=0) or another archiving tool of your choice
 
 ## Setup (Windows)
 
 0. Install prerequisites
 
-   **Note:** When installing PostgreSQL, remember the password you set for the postgres user.
+   **Note 1:** When installing PostgreSQL, remember the password you set for the postgres user.
+   **Note 2:** Remember to restart your device after installing all prerequisites.
+
+   1. Install Redis
+
+      **Note 1:** No installer is available for redis, so please follow the steps as given below.
+      **Note 2:** Alternatively, you can use WSL2 to install redis, though that's not covered here.
+
+      1. Download the zip file
+
+         **Note:** It's recommended to download `Redis-x.x.x-Windows-x64-cygwin-with-Service.zip`.
+
+      2. Navigate to C:\ directory and create a new folder named `redis`
+      3. Extract the zip file into the `redis` folder
+
+         ![Redis Folder on Windows](./imgs/redis_folder.png)
+
+      4. Double-click the `install_redis_service.bat` file
+      5. Press Windows Key + R, and in the dialogue box, type `services.msc` and press enter
+      6. Locate and right click on Redis
+      7. Set Startup Type to Automatic, and click on the start button unless it's disabled
+      8. Click ok and close the Services window
+      9. Open start, search for, and click on _View advanced system settings_
+      10. Click on _Environment Variables..._ button in _System Properties_ window
+      11. Under _System variables_, click `Path` variable, and then click the edit button
+      12. On _Edit Environment Variable_ window, click New and type `C:\redis`
+
+          ![Adding redis directory to PATH environment variable](./imgs/edit_environment_variable.png)
+
+      13. Click OK on each window to close them
 
 1. Clone repository
 
@@ -108,7 +139,14 @@
        python manage.py runserver
        ```
 
-    3. Visit [http://localhost:8000](http://localhost:8000) in the browser of your choice
+    3. In another terminal, start celery
+
+       ```bash
+       .\venv\Scripts\activate
+       celery --app=alphard worker --pool=solo --loglevel=info
+       ```
+
+    4. Visit [http://localhost:8000](http://localhost:8000) in the browser of your choice
 
 ## Setup (Ubuntu)
 
@@ -116,10 +154,11 @@
 
    ```bash
    sudo apt update
-   sudo apt install -y gcc build-essential libpq-dev python3 python3-venv python3-dev postgresql git curl
+   sudo apt install -y gcc build-essential libpq-dev python3 python3-venv python3-dev postgresql redis git curl
    curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
    sudo apt install -y nodejs
    sudo systemctl enable --now postgresql
+   sudo systemctl enable --now redis-server
    ```
 
 1. Clone repository
@@ -230,7 +269,14 @@
        python3 manage.py runserver
        ```
 
-    3. Visit [http://localhost:8000](http://localhost:8000) in the browser of your choice
+    3. In another terminal, start celery
+
+       ```bash
+       source ./venv/bin/activate
+       celery --app=alphard worker --loglevel=info
+       ```
+
+    4. Visit [http://localhost:8000](http://localhost:8000) in the browser of your choice
 
 ## Environment Variables
 
@@ -248,7 +294,9 @@
 | **EMAIL_HOST** | SMTP server host | sandbox.smtp.mailtrap.io |
 | **EMAIL_PORT** | SMTP server port | 587 |
 | **EMAIL_USE_TLS** | Use TLS for sending emails | True |
-| **EMAIL_USE_SSL** | USE SSL for sending emails | False |
+| **EMAIL_USE_SSL** | Use SSL for sending emails | False |
 | **EMAIL_HOST_USER** | SMTP username | - |
 | **EMAIL_HOST_PASSWORD** | SMTP password | - |
 | **DEFAULT_FROM_EMAIL** | Default from address for outgoing emails | admin@alphard.test |
+| **CELERY_BROKER_URL** | URL to message broker | redis://localhost:6379/0 |
+| **CELERY_RESULT_BACKEND** | URL to backend that stores the results | redis://localhost:6379/0 |
