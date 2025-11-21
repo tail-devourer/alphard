@@ -7,4 +7,5 @@ urlpatterns = [
     path('get-started', views.GetStartedView.as_view(), name='get_started'),
     path('logout', views.LogoutView.as_view(), name='logout'),
     path('get-started/done', views.GetStartedDoneView.as_view(), name='get_started_done'),
+    path('confirm-user/<uid>/<token>', views.ConfirmUserView.as_view(), name='confirm_user'),
 ]

@@ -2,7 +2,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import forms, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from .forms import CustomUserCreationForm
 from .tasks import send_confirmation_email
@@ -90,8 +90,30 @@ class GetStartedDoneView(View):
         })
 
     def post(self, request):
-        request.session.pop("confirmUser")
+        request.session.pop("confirmUser", None)
         return redirect("get_started")
+
+
+class ConfirmUserView(View):
+
+    def get(self, request, uid, token):
+        request.session.pop("confirmUser", None)
+
+        User = get_user_model()
+
+        try:
+            pk = urlsafe_base64_decode(uid).decode()
+            user = User.objects.get(pk=pk)
+
+            if user.is_active or not default_token_generator.check_token(user, token):
+                raise ValueError
+        except:
+            return render(request, "confirm-user-fail.html", {})
+
+        user.is_active = True
+        user.save()
+
+        return redirect("sign_in")
 
 
 class LogoutView(View):
