@@ -14,11 +14,13 @@
 0. Install prerequisites
 
    **Note 1:** When installing PostgreSQL, remember the password you set for the postgres user.
+
    **Note 2:** Remember to restart your device after installing all prerequisites.
 
    1. Install Redis
 
       **Note 1:** No installer is available for redis, so please follow the steps as given below.
+
       **Note 2:** Alternatively, you can use WSL2 to install redis, though that's not covered here.
 
       1. Download the zip file
