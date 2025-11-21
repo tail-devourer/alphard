@@ -21,3 +21,22 @@ def send_confirmation_email(full_name, email, confirmation_url):
     )
     msg.attach_alternative(html_body, "text/html")
     msg.send()
+
+@shared_task
+def send_password_reset_email(full_name, email, reset_url):
+    context = {
+        "full_name": full_name,
+        "reset_url": reset_url
+    }
+
+    text_body = render_to_string("email/reset-password.txt", context)
+    html_body = render_to_string("email/reset-password.html", context)
+
+    msg = EmailMultiAlternatives(
+        subject="Reset Password",
+        body=text_body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[email],
+    )
+    msg.attach_alternative(html_body, "text/html")
+    msg.send()

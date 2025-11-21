@@ -67,7 +67,7 @@
           </div>
           <div class="flex flex-1 flex-col space-y-2 floating-label">
             <span>Confirm Password</span>
-            <input type="password" placeholder="Confirm Password" name="password2" class="input" required>
+            <input type="password" placeholder="Confirm Password" name="password2" autocomplete="new-password" class="input" required>
             {% for error in form.password2.errors %}
               <div class="alert alert-error">
                 {% include "icons/error.svg" %}

@@ -4,8 +4,8 @@ from django.contrib.auth import forms, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from .forms import CustomUserCreationForm
-from .tasks import send_confirmation_email
+from .forms import CustomUserCreationForm, PasswordResetForm, PasswordResetConfirmForm
+from .tasks import send_confirmation_email, send_password_reset_email
 
 
 class HomeView(View):
@@ -116,6 +116,105 @@ class ConfirmUserView(View):
         return redirect("sign_in")
 
 
+class PasswordResetView(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("home")
+
+        return render(request, "password-reset-request.html", {
+            "form": PasswordResetForm(),
+        })
+
+    def post(self, request):
+        form = PasswordResetForm(data=request.POST)
+
+        if form.is_valid():
+            request.session["email"] = form.cleaned_data["email"]
+            return redirect("request_password_reset_done")
+
+        return render(request, "password-reset-request.html", {
+            "form": form,
+        })
+
+
+class PasswordResetDoneView(View):
+
+    def get(self, request):
+        email = request.session.get("email")
+
+        if not email:
+            return redirect("request_password_reset")
+
+        User = get_user_model()
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return redirect("request_password_reset")
+
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        reset_url = request.build_absolute_uri(f"/reset/{uid}/{token}")
+
+        send_password_reset_email.delay(user.full_name, user.email, reset_url)
+
+        return render(request, "password-reset-request-done.html", {
+            "email": email,
+        })
+
+    def post(self, request):
+        request.session.pop("email", None)
+        return redirect("request_password_reset")
+
+
+class PasswordResetConfirmView(View):
+
+    def get(self, request, uid, token):
+        if request.user.is_authenticated:
+            return redirect("home")
+
+        User = get_user_model()
+
+        try:
+            pk = urlsafe_base64_decode(uid).decode()
+            user = User.objects.get(pk=pk)
+
+            if not default_token_generator.check_token(user, token):
+                raise ValueError
+        except:
+            return render(request, "password-reset-fail.html", {})
+
+        return render(request, "password-reset-confirm.html", {
+            "form": PasswordResetConfirmForm(),
+        })
+
+    def post(self, request, uid, token):
+        request.session.pop("email", None)
+        form = PasswordResetConfirmForm(data=request.POST)
+
+        if form.is_valid():
+            User = get_user_model()
+
+            try:
+                pk = urlsafe_base64_decode(uid).decode()
+                user = User.objects.get(pk=pk)
+
+                if not default_token_generator.check_token(user, token):
+                    raise ValueError
+            except:
+                return render(request, "password-reset-fail.html", {})
+
+            user.set_password(form.cleaned_data["password1"])
+            user.save()
+
+            return redirect("sign_in")
+
+        return render(request, "password-reset-confirm.html", {
+            "form": form,
+        })
+
+
 class LogoutView(View):
 
     def post(self, request):
@@ -132,4 +231,3 @@ class ProfileView(View):
         return render(request, "profile.html", {
             "user": user,
         })
-
