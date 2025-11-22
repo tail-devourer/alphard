@@ -1,4 +1,5 @@
 from django.views import View
+from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import forms, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -81,7 +82,9 @@ class GetStartedDoneView(View):
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        confirmation_url = request.build_absolute_uri(f"/confirm-user/{uid}/{token}")
+        confirmation_url = request.build_absolute_uri(
+            reverse("confirm_user", kwargs={"uid": uid, "token": token})
+        )
 
         send_confirmation_email.delay(user.full_name, user.email, confirmation_url)
 
@@ -155,7 +158,9 @@ class PasswordResetDoneView(View):
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        reset_url = request.build_absolute_uri(f"/reset/{uid}/{token}")
+        reset_url = request.build_absolute_uri(
+            reverse("password_reset", kwargs={"uid": uid, "token": token})
+        )
 
         send_password_reset_email.delay(user.full_name, user.email, reset_url)
 
