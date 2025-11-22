@@ -191,25 +191,26 @@ class PasswordResetConfirmView(View):
             return render(request, "password-reset-fail.html", {})
 
         return render(request, "password-reset-confirm.html", {
-            "form": PasswordResetConfirmForm(),
+            "form": PasswordResetConfirmForm(user=user),
         })
 
     def post(self, request, uid, token):
         request.session.pop("email", None)
-        form = PasswordResetConfirmForm(data=request.POST)
+
+        User = get_user_model()
+
+        try:
+            pk = urlsafe_base64_decode(uid).decode()
+            user = User.objects.get(pk=pk)
+
+            if not default_token_generator.check_token(user, token):
+                raise ValueError
+        except:
+            return render(request, "password-reset-fail.html", {})
+
+        form = PasswordResetConfirmForm(user=user, data=request.POST)
 
         if form.is_valid():
-            User = get_user_model()
-
-            try:
-                pk = urlsafe_base64_decode(uid).decode()
-                user = User.objects.get(pk=pk)
-
-                if not default_token_generator.check_token(user, token):
-                    raise ValueError
-            except:
-                return render(request, "password-reset-fail.html", {})
-
             user.set_password(form.cleaned_data["password1"])
             user.save()
 

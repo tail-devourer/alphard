@@ -21,7 +21,7 @@ class PasswordResetForm(forms.Form):
         cleaned_data = super().clean()
         email = cleaned_data.get("email")
 
-        if not User.objects.filter(email=email).exists():
+        if email and not User.objects.filter(email=email).exists():
             raise forms.ValidationError("User with this email address does not exist.")
 
         return cleaned_data
@@ -33,12 +33,23 @@ class PasswordResetConfirmForm(forms.Form):
     )
     password2 = forms.CharField()
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
     def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get("password1")
         password2 = cleaned_data.get("password2")
 
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("The two password fields didn’t match.")
+            self.add_error(None, "The two password fields didn’t match.")
+
+        if password1:
+            try:
+                password_validation.validate_password(password1, self.user)
+            except forms.ValidationError as e:
+                for err in e.messages:
+                    self.add_error(None, err)
 
         return cleaned_data
