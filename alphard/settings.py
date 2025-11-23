@@ -8,6 +8,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
+
+For deployment best practices and security checklist, see
+https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 """
 
 from pathlib import Path
@@ -17,24 +20,31 @@ env = environ.Env(
     DEBUG=(bool, True)
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 environ.Env.read_env(BASE_DIR / '.env')
 
 NPM_BIN_PATH = env('NPM_BIN_PATH', default=r'C:\\Program Files\\nodejs\\npm.cmd')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# Security configuration
+# https://docs.djangoproject.com/en/5.2/topics/security/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e')
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: Ensure DEBUG is set to false in production
 DEBUG = env('DEBUG')
+
+# SECURITY WARNING: Do not expose SECRET_KEY in production
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e')
+SECRET_KEY_FALLBACKS = env.list("SECRET_KEY_FALLBACKS", default=[])
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -81,9 +91,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'alphard.wsgi.application'
-
 TAILWIND_APP_NAME = 'theme'
+
+WSGI_APPLICATION = 'alphard.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -99,54 +109,53 @@ DATABASES = {
     }
 }
 
+# Cache configuration
+# https://docs.djangoproject.com/en/5.2/topics/cache/
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("REDIS_CACHE_URL", default="redis://localhost:6379/0"),
+    }
+}
+
+# Session configuration
+# https://docs.djangoproject.com/en/5.2/topics/http/sessions/
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator' },
+    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator' },
+    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator' },
+    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator' },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
+LANGUAGE_CODE = 'en'
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files
+# https://docs.djangoproject.com/en/5.2/topics/files/
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'blog.User'
-
-# Email
+# Email configuration
+# https://docs.djangoproject.com/en/5.2/topics/email/
 
 EMAIL_HOST = env('EMAIL_HOST', default='sandbox.smtp.mailtrap.io')
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
@@ -154,9 +163,22 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='admin@alphard.test')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
+
+ADMINS = env.list("ADMINS", default=[])
+SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user model
+# https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#auth-custom-user
+
+AUTH_USER_MODEL = 'blog.User'
 
 # Celery
 
-CELERY_BROKER_URL = env("CELERY_BROKER", default="redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = env("CELERY_BROKER", default="redis://localhost:6379/0")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/2")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://localhost:6379/3")
