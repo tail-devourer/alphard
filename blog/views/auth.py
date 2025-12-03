@@ -1,18 +1,12 @@
 from django.views import View
 from django.urls import reverse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import forms, login, logout, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from .forms import CustomUserCreationForm, PasswordResetForm, PasswordResetConfirmForm
-from .tasks import send_confirmation_email, send_password_reset_email
-
-
-class HomeView(View):
-
-    def get(self, request):
-        return render(request, "home.html", {})
+from ..forms import CustomUserCreationForm, PasswordResetForm, PasswordResetConfirmForm
+from ..tasks import send_mail
 
 
 class SignInView(View):
@@ -38,6 +32,13 @@ class SignInView(View):
         })
 
 
+class LogoutView(View):
+
+    def post(self, request):
+        logout(request)
+        return redirect("home")
+
+
 class GetStartedView(View):
 
     def get(self, request):
@@ -56,7 +57,7 @@ class GetStartedView(View):
             user.is_active = False
             user.save()
 
-            request.session["confirmUser"] = user.email
+            request.session["email"] = user.email
 
             return redirect("get_started_done")
 
@@ -68,12 +69,13 @@ class GetStartedView(View):
 class GetStartedDoneView(View):
 
     def get(self, request):
-        email = request.session.get("confirmUser")
+        email = request.session.get("email")
 
         if not email:
             return redirect("get_started")
 
         User = get_user_model()
+        email = User.objects.normalize_email(email)
 
         try:
             user = User.objects.get(email=email)
@@ -86,21 +88,30 @@ class GetStartedDoneView(View):
             reverse("confirm_user", kwargs={"uid": uid, "token": token})
         )
 
-        send_confirmation_email.delay(user.full_name, user.email, confirmation_url)
+        send_mail.delay(
+            to=user.email,
+            subject="Confirm your email",
+            template_name="email/confirm-email.txt",
+            html_template_name="email/confirm-email.html",
+            context={
+                "full_name": user.full_name,
+                "confirmation_url": confirmation_url,
+            },
+        )
 
         return render(request, "get-started-done.html", {
             "email": email,
         })
 
     def post(self, request):
-        request.session.pop("confirmUser", None)
+        request.session.pop("email", None)
         return redirect("get_started")
 
 
 class ConfirmUserView(View):
 
     def get(self, request, uid, token):
-        request.session.pop("confirmUser", None)
+        request.session.pop("email", None)
 
         User = get_user_model()
 
@@ -150,6 +161,7 @@ class PasswordResetDoneView(View):
             return redirect("request_password_reset")
 
         User = get_user_model()
+        email = User.objects.normalize_email(email)
 
         try:
             user = User.objects.get(email=email)
@@ -162,7 +174,16 @@ class PasswordResetDoneView(View):
             reverse("password_reset", kwargs={"uid": uid, "token": token})
         )
 
-        send_password_reset_email.delay(user.full_name, user.email, reset_url)
+        send_mail.delay(
+            to=user.email,
+            subject="Reset Password",
+            template_name="email/reset-password.txt",
+            html_template_name="email/reset-password.html",
+            context={
+                "full_name": user.full_name,
+                "reset_url": reset_url,
+            },
+        )
 
         return render(request, "password-reset-request-done.html", {
             "email": email,
@@ -218,22 +239,4 @@ class PasswordResetConfirmView(View):
 
         return render(request, "password-reset-confirm.html", {
             "form": form,
-        })
-
-
-class LogoutView(View):
-
-    def post(self, request):
-        logout(request)
-        return redirect("home")
-
-
-class ProfileView(View):
-
-    def get(self, request, username):
-        User = get_user_model()
-        user = get_object_or_404(User, username=username)
-
-        return render(request, "profile.html", {
-            "user": user,
         })

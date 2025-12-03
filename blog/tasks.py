@@ -4,39 +4,15 @@ from django.template.loader import render_to_string
 from django.conf import settings
 
 @shared_task
-def send_confirmation_email(full_name, email, confirmation_url):
-    context = {
-        "full_name": full_name,
-        "confirmation_url": confirmation_url
-    }
-
-    text_body = render_to_string("email/confirm-email.txt", context)
-    html_body = render_to_string("email/confirm-email.html", context)
+def send_mail(to, subject, template_name, html_template_name, context):
+    text_body = render_to_string(template_name, context)
+    html_body = render_to_string(html_template_name, context)
 
     msg = EmailMultiAlternatives(
-        subject="Confirm your email",
+        subject=subject,
         body=text_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[email],
-    )
-    msg.attach_alternative(html_body, "text/html")
-    msg.send()
-
-@shared_task
-def send_password_reset_email(full_name, email, reset_url):
-    context = {
-        "full_name": full_name,
-        "reset_url": reset_url
-    }
-
-    text_body = render_to_string("email/reset-password.txt", context)
-    html_body = render_to_string("email/reset-password.html", context)
-
-    msg = EmailMultiAlternatives(
-        subject="Reset Password",
-        body=text_body,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[email],
+        to=[to],
     )
     msg.attach_alternative(html_body, "text/html")
     msg.send()

@@ -19,7 +19,7 @@ class PasswordResetForm(forms.Form):
         User = get_user_model()
 
         cleaned_data = super().clean()
-        email = cleaned_data.get("email")
+        email = User.objects.normalize_email(cleaned_data.get("email"))
 
         if email and not User.objects.filter(email=email).exists():
             raise forms.ValidationError("User with this email address does not exist.")
