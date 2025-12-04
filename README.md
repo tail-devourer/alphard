@@ -7,7 +7,7 @@
 * [PostgreSQL 17.6+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 * [Node.js v22.21.1+](https://nodejs.org/en/download)
 * [Redis v8.2.3+](https://github.com/redis-windows/redis-windows/releases)
-* [WinRAR](https://www.win-rar.com/download.html?&L=0) or another archiving tool of your choice
+* Archiving tool of your choice *(Windows Only)*
 
 ## Setup (Windows)
 
@@ -21,7 +21,7 @@
 
       **Note 1:** No installer is available for redis, so please follow the steps as given below.
 
-      **Note 2:** Alternatively, you can use WSL2 to install redis, though that's not covered here.
+      **Note 2:** Alternatively, you can use WSL2 to install redis, though that's not covered here. If you go this route, you'll to enable WSL and I advise that you install Ubuntu though most articles will cover exactly that. From there, you'll have to follow certain instructions that are included in this guide but for Ubuntu instead of Windows.
 
       1. Download the zip file
 
@@ -45,6 +45,8 @@
           ![Adding redis directory to PATH environment variable](./imgs/edit_environment_variable.png)
 
       13. Click OK on each window to close them
+
+      **Note 3:** The steps starting 9 above were technically optional, but realistically you would want to be able to check the data going into redis and such is the easiest to do if you've redis on PATH.
 
 1. Clone repository
 
@@ -282,23 +284,32 @@
 
 ## Environment Variables
 
+The application uses the following variables for functionality purposes that are by default set to suitable values for development purposes. If you're doing production setup without docker (which is the recommended method), please change all of the following settings to suit your production environment.
+
 | Variable | Description | Default |
 | --- | --- | --- |
+| **NPM_BIN_PATH** | Path to npm executable | C:\Program Files\nodejs\npm.cmd |
 | **DEBUG** | Shows detailed error information | True |
 | **SECRET_KEY** | Cryptographic signing key | django-insecure-... |
+| **SECRET_KEY_FALLBACKS** | List of previously in use secret keys | [] |
 | **ALLOWED_HOSTS** | Hosts allowed to serve the application | [] |
 | **DB_NAME** | Database name | alphard |
 | **DB_USER** | Database user | alphard |
 | **DB_PASSWORD** | Database password | password |
 | **DB_HOST** | Database server host | localhost |
 | **DB_PORT** | Database server port | 5432 |
-| **NPM_BIN_PATH** | Path to npm executable | C:\Program Files\nodejs\npm.cmd |
+| **REDIS_CACHE_URL** | Redis URL for response caching | redis://localhost:6379/0 |
+| **REDIS_URL** | Redis URL for rate limiting and misc purposes | redis://localhost:6379/1 |
+| **CELERY_BROKER_URL** | URL to message broker | redis://localhost:6379/2 |
+| **CELERY_RESULT_BACKEND** | URL to backend that stores the results | redis://localhost:6379/3 |
+| **CSRF_COOKIE_SECURE** | Sends CSRF cookies over SSL (Production Only) | True |
+| **SESSION_COOKIE_SECURE** | Sends session cookies over SSL (Production Only) | True |
 | **EMAIL_HOST** | SMTP server host | sandbox.smtp.mailtrap.io |
 | **EMAIL_PORT** | SMTP server port | 587 |
 | **EMAIL_USE_TLS** | Use TLS for sending emails | True |
 | **EMAIL_USE_SSL** | Use SSL for sending emails | False |
 | **EMAIL_HOST_USER** | SMTP username | - |
 | **EMAIL_HOST_PASSWORD** | SMTP password | - |
-| **DEFAULT_FROM_EMAIL** | Default from address for outgoing emails | admin@alphard.test |
-| **CELERY_BROKER_URL** | URL to message broker | redis://localhost:6379/0 |
-| **CELERY_RESULT_BACKEND** | URL to backend that stores the results | redis://localhost:6379/0 |
+| **DEFAULT_FROM_EMAIL** | Default from address for outgoing emails | webmaster@localhost |
+| **ADMINS** | List of admins who will receive emails on 500 errors | [] |
+| **SERVER_EMAIL** | Email used to send 500 errors related emails to admins | root@localhost |

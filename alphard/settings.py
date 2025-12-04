@@ -25,23 +25,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 environ.Env.read_env(BASE_DIR / '.env')
 
+# Required by django-tailwind package as npm detection always fails irrespective of platform,
+# and irrespective of if the npm executable is on the PATH. Default is for Windows due to ensure
+# ease of development.
 NPM_BIN_PATH = env('NPM_BIN_PATH', default=r'C:\\Program Files\\nodejs\\npm.cmd')
 
 # Security configuration
 # https://docs.djangoproject.com/en/5.2/topics/security/
 
-# SECURITY WARNING: Ensure DEBUG is set to false in production
+# SECURITY WARNING: Ensure DEBUG is set to false in production. Set to True by default.
 DEBUG = env('DEBUG')
 
-# SECURITY WARNING: Do not expose SECRET_KEY in production
+# SECURITY WARNING: Do not expose SECRET_KEY in production. If you do decide to
+# rotate keys somehow as I still don't know how to do it with docker, put the old keys
+# in the SECRET_KEY_FALLBACKS list and keep it there for at most 3 months.
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e')
 SECRET_KEY_FALLBACKS = env.list("SECRET_KEY_FALLBACKS", default=[])
 
+# List of host/domain names that this Django site can serve.
+# In development, Localhost, 127.0.0.1, and ::1 are allowed by default.
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
+# Nginx should serve the website in production, or another reverse proxy if you're
+# not relying on Docker. For testing purposes before full deployment, it's important to
+# disable cookie security as cookies would not be sent back to the server otherwise.
 if not DEBUG:
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", default=True)
+    SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", default=True)
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -70,6 +80,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Provide the browser reload middleware in development. It's not needed in production
+# and will just slow down the server.
 if DEBUG:
     INSTALLED_APPS += ["django_browser_reload"]
     MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
@@ -96,6 +108,8 @@ TAILWIND_APP_NAME = 'theme'
 WSGI_APPLICATION = 'alphard.wsgi.application'
 
 # Database
+# Please note that the app only works with PostgreSQL due to ACID compliancy.
+# I may also rely on Postgres specific features in the future.
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
@@ -110,6 +124,8 @@ DATABASES = {
 }
 
 # Cache configuration
+# As I had planned to use Redis for rate limiting, I didn't find a reason not to use
+# it for caching as well.
 # https://docs.djangoproject.com/en/5.2/topics/cache/
 
 CACHES = {
@@ -143,6 +159,8 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+# Django doesn't automatically serve static and media files in production.
+# Use nginx or another web server instead if you're not using docker.
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
@@ -155,11 +173,12 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Email configuration
+# Please note that ADMINS will receive an email whenever a 500 error is raised.
 # https://docs.djangoproject.com/en/5.2/topics/email/
 
 EMAIL_HOST = env('EMAIL_HOST', default='sandbox.smtp.mailtrap.io')
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
-EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True) # Don't set both TLS and SSL to True.
 EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
@@ -177,6 +196,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#auth-custom-user
 
 AUTH_USER_MODEL = 'blog.User'
+
+# Redis
+# This url is used for rate limiting purposes, and it's recommended to make it distinct.
+
+REDIS_URL = env("REDIS_URL", default="redis://localhost:6379/1")
 
 # Celery
 
