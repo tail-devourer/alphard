@@ -294,28 +294,28 @@ The following environment variables control core application behavior. Defaults 
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| **NPM_BIN_PATH** | Path to npm executable | C:\Program Files\nodejs\npm.cmd |
-| **DEBUG** | Shows detailed error information | True |
-| **SECRET_KEY** | Cryptographic signing key | django-insecure-... |
-| **SECRET_KEY_FALLBACKS** | List of previously in use secret keys | [] |
-| **ALLOWED_HOSTS** | Hosts allowed to serve the application | [] |
-| **DB_NAME** | Database name | alphard |
-| **DB_USER** | Database user | alphard |
-| **DB_PASSWORD** | Database password | password |
-| **DB_HOST** | Database server host | localhost |
-| **DB_PORT** | Database server port | 5432 |
-| **REDIS_CACHE_URL** | Redis URL for response caching | redis://localhost:6379/0 |
-| **REDIS_URL** | Redis URL for rate limiting and misc purposes | redis://localhost:6379/1 |
-| **CELERY_BROKER_URL** | URL to message broker | redis://localhost:6379/2 |
-| **CELERY_RESULT_BACKEND** | URL to backend that stores the results | redis://localhost:6379/3 |
-| **CSRF_COOKIE_SECURE** | Sends CSRF cookies over SSL (Production Only) | True |
-| **SESSION_COOKIE_SECURE** | Sends session cookies over SSL (Production Only) | True |
-| **EMAIL_HOST** | SMTP server host | sandbox.smtp.mailtrap.io |
-| **EMAIL_PORT** | SMTP server port | 587 |
-| **EMAIL_USE_TLS** | Use TLS for sending emails | True |
-| **EMAIL_USE_SSL** | Use SSL for sending emails | False |
-| **EMAIL_HOST_USER** | SMTP username | - |
-| **EMAIL_HOST_PASSWORD** | SMTP password | - |
-| **DEFAULT_FROM_EMAIL** | Default from address for outgoing emails | webmaster@localhost |
-| **ADMINS** | List of admins who will receive emails on 500 errors | [] |
-| **SERVER_EMAIL** | Email used to send 500 errors related emails to admins | root@localhost |
+| **NPM_BIN_PATH** | Path to the npm executable. Required for Django Tailwind. | C:\Program Files\nodejs\npm.cmd |
+| **DEBUG** | Enables Django debug mode. Must be `False` in production. | True |
+| **SECRET_KEY** | Primary Django secret key used for signing. Must be unique and unpredictable in production. | django-insecure-... |
+| **SECRET_KEY_FALLBACKS** | Comma-separated list of previously used secret keys for rotation. | [] |
+| **ALLOWED_HOSTS** | Comma-separated list of domains allowed to serve the application. | [] |
+| **DB_NAME** | PostgreSQL database name. | alphard |
+| **DB_USER** | PostgreSQL username. | alphard |
+| **DB_PASSWORD** | PostgreSQL password. | password |
+| **DB_HOST** | PostgreSQL host. | localhost |
+| **DB_PORT** | PostgreSQL port. | 5432 |
+| **REDIS_CACHE_URL** | Redis URL used for Django’s cache backend. | redis://localhost:6379/0 |
+| **REDIS_URL** | Redis URL used for non-Celery background functionality (rate limiting, misc tasks). | redis://localhost:6379/1 |
+| **CELERY_BROKER_URL** | Celery message broker URL. | redis://localhost:6379/2 |
+| **CELERY_RESULT_BACKEND** | Celery results backend URL. | redis://localhost:6379/3 |
+| **CSRF_COOKIE_SECURE** | Forces CSRF cookies to be sent only over HTTPS. (Production Only) | True |
+| **SESSION_COOKIE_SECURE** | Forces session cookies to be sent only over HTTPS. (Production Only) | True |
+| **EMAIL_HOST** | SMTP server hostname. | sandbox.smtp.mailtrap.io |
+| **EMAIL_PORT** | SMTP server port. | 587 |
+| **EMAIL_USE_TLS** | Enables TLS for outgoing email connections. | True |
+| **EMAIL_USE_SSL** | Enables SSL for outgoing email connections (mutually exclusive with TLS). | False |
+| **EMAIL_HOST_USER** | SMTP username. | - |
+| **EMAIL_HOST_PASSWORD** | SMTP password. | - |
+| **DEFAULT_FROM_EMAIL** | Default sender address for outgoing emails. | webmaster@localhost |
+| **ADMINS** | Comma-separated list of Name <email> pairs for receiving admin error notifications. | [] |
+| **SERVER_EMAIL** | Sender address used for system error emails to admins. | root@localhost |
