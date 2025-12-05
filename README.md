@@ -1,8 +1,10 @@
 # Alphard
 
-Alphard is a blogging platform... and well that's all there is to it. It's a learning project, teaching me how to use django and docker while adding the most popular libraries on top to build something that can be deployed without too much hesitation.
+Alphard is a lightweight blogging platform built as a learning project focused on Django, Docker, and modern development tooling. It integrates commonly used libraries and patterns so the application can be deployed with confidence while still remaining approachable for experimentation and study.
 
-Please note that the instructions below are for development purposes only, though if you're not using docker to deploy it personally, just remember to read through the list of environment variables and through django wiki to make necessary changes. If you instead want to use docker, see `DEPLOYMENT.md` Thanks!
+The instructions below apply to development setups. If you plan to deploy without Docker, make sure to review the environment variables and relevant Django documentation to adjust the configuration for a production environment. For Docker-based deployments (strongly recommended), refer to `DEPLOYMENT.md`.
+
+The project is provided as open source. If you deploy it, you are responsible for verifying your configuration, ensuring security, and resolving any issues that arise.
 
 ## Prerequisites
 
@@ -288,7 +290,7 @@ Please note that the instructions below are for development purposes only, thoug
 
 ## Environment Variables
 
-The application uses the following variables for functionality purposes that are by default set to suitable values for development purposes. If you're doing production setup without docker (which is the recommended method), please change all of the following settings to suit your production environment.
+The following environment variables control core application behavior. Defaults are development-oriented. For any production setup outside Docker, update these values accordingly.
 
 | Variable | Description | Default |
 | --- | --- | --- |
