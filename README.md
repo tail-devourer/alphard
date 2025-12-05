@@ -1,5 +1,9 @@
 # Alphard
 
+Alphard is a blogging platform... and well that's all there is to it. It's a learning project, teaching me how to use django and docker while adding the most popular libraries on top to build something that can be deployed without too much hesitation.
+
+Please note that the instructions below are for development purposes only, though if you're not using docker to deploy it personally, just remember to read through the list of environment variables and through django wiki to make necessary changes. If you instead want to use docker, see `DEPLOYMENT.md` Thanks!
+
 ## Prerequisites
 
 * [Git](https://gitforwindows.org/)
