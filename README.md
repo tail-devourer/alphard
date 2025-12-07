@@ -317,5 +317,5 @@ The following environment variables control core application behavior. Defaults 
 | **EMAIL_HOST_USER** | SMTP username. | - |
 | **EMAIL_HOST_PASSWORD** | SMTP password. | - |
 | **DEFAULT_FROM_EMAIL** | Default sender address for outgoing emails. | webmaster@localhost |
-| **ADMINS** | Comma-separated list of Name <email> pairs for receiving admin error notifications. | [] |
+| **ADMINS** | Comma-separated list of name:email pairs for receiving admin error notifications. | [] |
 | **SERVER_EMAIL** | Sender address used for system error emails to admins. | root@localhost |

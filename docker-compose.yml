@@ -1,67 +1,220 @@
 services:
   web:
-    build: .
+    image: alphard-web:latest
     command: gunicorn --bind 0.0.0.0:8000 --workers 3 alphard.wsgi:application
     volumes:
       - media_data:/usr/src/app/media
-    env_file:
-      - ./.env.production
+    environment:
+      NPM_BIN_PATH: "/usr/bin/npm"
+      DEBUG: "False"
+      SECRET_KEY_FILE: /run/secrets/django_secret_key
+      ALLOWED_HOSTS_FILE: /run/secrets/allowed_hosts
+
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      DB_HOST: "alphard_db"
+      REDIS_CACHE_URL: "redis://alphard_redis:6379/0"
+      REDIS_URL: "redis://alphard_redis:6379/1"
+      CELERY_BROKER_URL: "redis://alphard_redis:6379/2"
+      CELERY_RESULT_BACKEND: "redis://alphard_redis:6379/3"
+
+      EMAIL_HOST_FILE: /run/secrets/email_host
+      EMAIL_PORT_FILE: /run/secrets/email_port
+      EMAIL_USE_TLS_FILE: /run/secrets/email_use_tls
+      EMAIL_USE_SSL_FILE: /run/secrets/email_use_ssl
+      EMAIL_HOST_USER_FILE: /run/secrets/email_host_user
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/email_host_password
+      DEFAULT_FROM_EMAIL_FILE: /run/secrets/default_from_email
+      ADMINS_FILE: /run/secrets/admins
+      SERVER_EMAIL_FILE: /run/secrets/server_email
+
+      CSRF_COOKIE_SECURE_FILE: /run/secrets/csrf_cookie_secure
+      SESSION_COOKIE_SECURE_FILE: /run/secrets/session_cookie_secure
     secrets:
       - django_secret_key
-    depends_on:
-      - db
-      - redis
+      - allowed_hosts
+      - db_password
+      - email_host
+      - email_port
+      - email_use_tls
+      - email_use_ssl
+      - email_host_user
+      - email_host_password
+      - default_from_email
+      - admins
+      - server_email
+      - csrf_cookie_secure
+      - session_cookie_secure
+    deploy:
+      replicas: 1
+    networks:
+      - internal
 
   celery:
-    build: .
+    image: alphard-celery:latest
     command: celery --app=alphard worker --loglevel=info
-    env_file:
-      - ./.env.production
-    depends_on:
-      - redis
-      - db
-      - web
+    environment:
+      NPM_BIN_PATH: "/usr/bin/npm"
+      DEBUG: "False"
+      SECRET_KEY_FILE: /run/secrets/django_secret_key
+      ALLOWED_HOSTS_FILE: /run/secrets/allowed_hosts
+
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      DB_HOST: "alphard_db"
+      REDIS_CACHE_URL: "redis://alphard_redis:6379/0"
+      REDIS_URL: "redis://alphard_redis:6379/1"
+      CELERY_BROKER_URL: "redis://alphard_redis:6379/2"
+      CELERY_RESULT_BACKEND: "redis://alphard_redis:6379/3"
+
+      EMAIL_HOST_FILE: /run/secrets/email_host
+      EMAIL_PORT_FILE: /run/secrets/email_port
+      EMAIL_USE_TLS_FILE: /run/secrets/email_use_tls
+      EMAIL_USE_SSL_FILE: /run/secrets/email_use_ssl
+      EMAIL_HOST_USER_FILE: /run/secrets/email_host_user
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/email_host_password
+      DEFAULT_FROM_EMAIL_FILE: /run/secrets/default_from_email
+      ADMINS_FILE: /run/secrets/admins
+      SERVER_EMAIL_FILE: /run/secrets/server_email
+
+      CSRF_COOKIE_SECURE_FILE: /run/secrets/csrf_cookie_secure
+      SESSION_COOKIE_SECURE_FILE: /run/secrets/session_cookie_secure
+    secrets:
+      - django_secret_key
+      - allowed_hosts
+      - db_password
+      - email_host
+      - email_port
+      - email_use_tls
+      - email_use_ssl
+      - email_host_user
+      - email_host_password
+      - default_from_email
+      - admins
+      - server_email
+      - csrf_cookie_secure
+      - session_cookie_secure
+    deploy:
+      replicas: 1
+    networks:
+      - internal
 
   celery_beat:
-    build: .
+    image: alphard-celery-beat:latest
     command: celery --app=alphard beat --loglevel=info
-    env_file:
-      - ./.env.production
-    depends_on:
-      - redis
-      - db
-      - web
+    environment:
+      NPM_BIN_PATH: "/usr/bin/npm"
+      DEBUG: "False"
+      SECRET_KEY_FILE: /run/secrets/django_secret_key
+      ALLOWED_HOSTS_FILE: /run/secrets/allowed_hosts
+
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      DB_HOST: "alphard_db"
+      REDIS_CACHE_URL: "redis://alphard_redis:6379/0"
+      REDIS_URL: "redis://alphard_redis:6379/1"
+      CELERY_BROKER_URL: "redis://alphard_redis:6379/2"
+      CELERY_RESULT_BACKEND: "redis://alphard_redis:6379/3"
+
+      EMAIL_HOST_FILE: /run/secrets/email_host
+      EMAIL_PORT_FILE: /run/secrets/email_port
+      EMAIL_USE_TLS_FILE: /run/secrets/email_use_tls
+      EMAIL_USE_SSL_FILE: /run/secrets/email_use_ssl
+      EMAIL_HOST_USER_FILE: /run/secrets/email_host_user
+      EMAIL_HOST_PASSWORD_FILE: /run/secrets/email_host_password
+      DEFAULT_FROM_EMAIL_FILE: /run/secrets/default_from_email
+      ADMINS_FILE: /run/secrets/admins
+      SERVER_EMAIL_FILE: /run/secrets/server_email
+
+      CSRF_COOKIE_SECURE_FILE: /run/secrets/csrf_cookie_secure
+      SESSION_COOKIE_SECURE_FILE: /run/secrets/session_cookie_secure
+    secrets:
+      - django_secret_key
+      - allowed_hosts
+      - db_password
+      - email_host
+      - email_port
+      - email_use_tls
+      - email_use_ssl
+      - email_host_user
+      - email_host_password
+      - default_from_email
+      - admins
+      - server_email
+      - csrf_cookie_secure
+      - session_cookie_secure
+    deploy:
+      replicas: 1
+    networks:
+      - internal
 
   redis:
     image: redis:8-bookworm
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
+    deploy:
+      replicas: 1
+    networks:
+      - internal
 
   db:
     image: postgres:17.6-bookworm
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=alphard
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
-      - POSTGRES_DB=alphard
+      POSTGRES_USER: alphard
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB: alphard
+    secrets:
+      - db_password
+    deploy:
+      replicas: 1
+    networks:
+      - internal
 
   nginx:
     image: nginx:1.28.0-bookworm
     ports:
       - "80:80"
-    depends_on:
-      - web
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - media_data:/usr/src/app/media
+    deploy:
+      replicas: 1
+    networks:
+      - internal
 
 secrets:
+  allowed_hosts:
+    external: true
   django_secret_key:
     external: true
   db_password:
     external: true
+  email_host:
+    external: true
+  email_port:
+    external: true
+  email_use_tls:
+    external: true
+  email_use_ssl:
+    external: true
+  email_host_user:
+    external: true
+  email_host_password:
+    external: true
+  default_from_email:
+    external: true
+  admins:
+    external: true
+  server_email:
+    external: true
+  csrf_cookie_secure:
+    external: true
+  session_cookie_secure:
+    external: true
+
+networks:
+  internal:
+    driver: overlay
 
 volumes:
   postgres_data:
