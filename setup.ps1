@@ -47,7 +47,7 @@ Read-Secret -name "allowed_hosts" -prompt "Enter comma-separated list of domains
 Read-Secret -name "db_password" -autoGenerate
 
 Read-Secret -name "email_host" -prompt "Enter SMTP server hostname"
-Read-Secret -name "email_port" -prompt "Enter SMTP server port"
+Read-Secret -name "email_port" -prompt "Enter SMTP server port" -default "587"
 Read-Secret -name "email_use_tls" -prompt "Do you want to enable TLS for outgoing emails?" -default "True"
 Read-Secret -name "email_use_ssl" -prompt "Do you want to enable SSL for outgoing emails?" -default "False"
 Read-Secret -name "email_host_user" -prompt "Enter SMTP username"
