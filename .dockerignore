@@ -4,5 +4,6 @@
 env/
 venv/
 
+imgs/
 README.md
 DEPLOYMENT.md

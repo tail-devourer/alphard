@@ -54,8 +54,8 @@ Read-Secret -name "email_host_user" -prompt "Enter SMTP username"
 Read-Secret -name "email_host_password" -prompt "Enter SMTP password"
 Read-Secret -name "default_from_email" -prompt "Enter default sender address for outgoing emails"
 
-Read-Secret -name "admins" -prompt "[OPTIONAL] Enter comma-separated list of name:email pairs for receiving admin error notifications"
-Read-Secret -name "server_email" -prompt "[OPTIONAL] Enter sender address used for system error emails to admins"
+Read-Secret -name "admins" -prompt "Enter comma-separated list of name:email pairs for receiving admin error notifications"
+Read-Secret -name "server_email" -prompt "Enter sender address used for system error emails to admins"
 
 docker build -t alphard-web ./
 docker build -t alphard-celery ./

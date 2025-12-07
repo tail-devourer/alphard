@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 ENV NPM_BIN_PATH=/usr/bin/npm
 
 RUN apt update \
-    && apt install -y gcc build-essential libpq-dev python3-dev curl \
+    && apt install -y gcc build-essential libpq-dev python3-dev curl postgresql-client \
     && curl -fsSL https://deb.nodesource.com/setup_22.x | sh - \
     && apt install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
