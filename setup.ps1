@@ -28,10 +28,10 @@ function Read-Secret {
 
 docker swarm init | Out-Null
 
-$prod = Read-Host "Is this a prod or test deployment (default - prod)"
+$prod = Read-Host "Is this a prod or test deployment (default - Production)"
 $prod = $prod.Trim().ToLower()
 
-if ($prod -in @("", "prod")) {
+if ($prod -in @("", "prod", "production")) {
     $csrf_cookie_secure = "True"
     $session_cookie_secure = "True"
 } else {

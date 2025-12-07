@@ -3,6 +3,7 @@ services:
     image: alphard-web:latest
     command: gunicorn --bind 0.0.0.0:8000 --workers 3 alphard.wsgi:application
     volumes:
+      - static_files:/usr/src/app/staticfiles
       - media_data:/usr/src/app/media
     environment:
       NPM_BIN_PATH: "/usr/bin/npm"
@@ -176,6 +177,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_files:/usr/src/app/staticfiles:ro
       - media_data:/usr/src/app/media
     deploy:
       replicas: 1
@@ -218,5 +220,6 @@ networks:
 
 volumes:
   postgres_data:
+  static_files:
   media_data:
   redis_data:
