@@ -15,6 +15,7 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
+from environ import NoValue
 import environ
 
 env = environ.Env(
@@ -25,6 +26,23 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 environ.Env.read_env(BASE_DIR / '.env')
+
+NOTSET = NoValue()
+
+def get_secret(var, cast=None, default=NOTSET, parse_default=False):
+    try:
+        path = env(f"{var}_FILE")
+
+        with open(path, 'r') as file:
+            value = file.read().strip()
+
+        return env.parse_value(value, cast)
+    except ImproperlyConfigured as e:
+        print(f"{var}_FILE environment variable is not set. Falling back to {var}...")
+    except FileNotFoundError as e:
+        print(f"{var}_FILE environment variable points to a missing file. Falling back to {var}...")
+
+    return env(var, cast=cast, default=default, parse_default=parse_default)
 
 # Required by django-tailwind package as npm detection always fails irrespective of platform,
 # and irrespective of if the npm executable is on the PATH. Default is for Windows due to ensure
@@ -40,19 +58,19 @@ DEBUG = env('DEBUG')
 # SECURITY WARNING: Do not expose SECRET_KEY in production. If you do decide to
 # rotate keys somehow as I still don't know how to do it with docker, put the old keys
 # in the SECRET_KEY_FALLBACKS list and keep it there for at most 3 months.
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e')
-SECRET_KEY_FALLBACKS = env.list("SECRET_KEY_FALLBACKS", default=[])
+SECRET_KEY = get_secret('SECRET_KEY', default='django-insecure-fnmrrc9h!ne^zudbm_!o2--_((e=hmz+y02i-i84o4w76drx5e')
+SECRET_KEY_FALLBACKS = get_secret("SECRET_KEY_FALLBACKS", cast=list, default=[])
 
 # List of host/domain names that this Django site can serve.
 # In development, Localhost, 127.0.0.1, and ::1 are allowed by default.
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+ALLOWED_HOSTS = get_secret('ALLOWED_HOSTS', cast=list, default=[])
 
 # Nginx should serve the website in production, or another reverse proxy if you're
 # not relying on Docker. For testing purposes before full deployment, it's important to
 # disable cookie security as cookies would not be sent back to the server otherwise.
 if not DEBUG:
-    CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", default=True)
-    SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", default=True)
+    CSRF_COOKIE_SECURE = get_secret("CSRF_COOKIE_SECURE", cast=bool, default=True)
+    SESSION_COOKIE_SECURE = get_secret("SESSION_COOKIE_SECURE", cast=bool, default=True)
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -116,11 +134,11 @@ WSGI_APPLICATION = 'alphard.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', default='alphard'),
-        'USER': env('DB_USER', default='alphard'),
-        'PASSWORD': env('DB_PASSWORD', default='password'),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env.int('DB_PORT', default=5432),
+        'NAME': get_secret('DB_NAME', default='alphard'),
+        'USER': get_secret('DB_USER', default='alphard'),
+        'PASSWORD': get_secret('DB_PASSWORD', default='password'),
+        'HOST': get_secret('DB_HOST', default='localhost'),
+        'PORT': get_secret('DB_PORT', cast=int, default=5432),
     }
 }
 
@@ -132,7 +150,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": env("REDIS_CACHE_URL", default="redis://localhost:6379/0"),
+        "LOCATION": get_secret("REDIS_CACHE_URL", default="redis://localhost:6379/0"),
     }
 }
 
@@ -177,16 +195,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Please note that ADMINS will receive an email whenever a 500 error is raised.
 # https://docs.djangoproject.com/en/5.2/topics/email/
 
-EMAIL_HOST = env('EMAIL_HOST', default='sandbox.smtp.mailtrap.io')
-EMAIL_PORT = env.int('EMAIL_PORT', default=587)
-EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True) # Don't set both TLS and SSL to True.
-EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
+EMAIL_HOST = get_secret('EMAIL_HOST', default='sandbox.smtp.mailtrap.io')
+EMAIL_PORT = get_secret('EMAIL_PORT', cast=int, default=587)
+EMAIL_USE_TLS = get_secret('EMAIL_USE_TLS', cast=bool, default=True) # Don't set both TLS and SSL to True.
+EMAIL_USE_SSL = get_secret('EMAIL_USE_SSL', cast=bool, default=False)
+EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = get_secret('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 
-ADMINS = [i.split(':', 1) for i in env.list("ADMINS", default=[])]
-SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
+ADMINS = [i.split(':', 1) for i in get_secret("ADMINS", cast=list, default=[])]
+SERVER_EMAIL = get_secret("SERVER_EMAIL", default="root@localhost")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -201,9 +219,9 @@ AUTH_USER_MODEL = 'blog.User'
 # Redis
 # This url is used for rate limiting purposes, and it's recommended to make it distinct.
 
-REDIS_URL = env("REDIS_URL", default="redis://localhost:6379/1")
+REDIS_URL = get_secret("REDIS_URL", default="redis://localhost:6379/1")
 
 # Celery
 
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/2")
-CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://localhost:6379/3")
+CELERY_BROKER_URL = get_secret("CELERY_BROKER_URL", default="redis://localhost:6379/2")
+CELERY_RESULT_BACKEND = get_secret("CELERY_RESULT_BACKEND", default="redis://localhost:6379/3")

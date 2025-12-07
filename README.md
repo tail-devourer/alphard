@@ -290,7 +290,7 @@ The project is provided as open source. If you deploy it, you are responsible fo
 
 ## Environment Variables
 
-The following environment variables control core application behavior. Defaults are development-oriented. For any production setup outside Docker, update these values accordingly.
+The following environment variables control core application behavior. Defaults are development-oriented. For sensitive values, each also supports a _FILE variant to read the value from a file (except NPM_BIN_PATH and DEBUG). For any production setup outside Docker, update these values accordingly.
 
 | Variable | Description | Default |
 | --- | --- | --- |
