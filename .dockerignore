@@ -1,9 +1,81 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/**
+!media/default.png
+staticfiles/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Translations
+*.mo
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# Tailwind
+theme/static/
+theme/static_src/node_modules
+
+# Git
 .git/
 .gitignore
 
+# Docker
+Dockerfile
+docker-stack.yml
+.dockerignore
+
+# Environments
+.env**
 env/
 venv/
 
+# IDEs & Code Editors
+.idea/
+.vscode/
+
+# Misc
 imgs/
-README.md
-DEPLOYMENT.md
+*.md
+setup.sh
+setup.ps1
