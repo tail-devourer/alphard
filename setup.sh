@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 read_secret() {
     local name="$1"
@@ -30,28 +29,7 @@ read_secret() {
 
 docker swarm init >/dev/null 2>&1 || true
 
-read -rp "Is this a prod or test deployment (default: prod): " prod
-prod=$(echo "$prod" | tr '[:upper:]' '[:lower:]' | xargs)
-
-if [[ -z "$prod" || "$prod" == "prod" || "$prod" == "production" ]]; then
-    csrf_cookie_secure="True"
-    session_cookie_secure="True"
-else
-    csrf_cookie_secure="False"
-    session_cookie_secure="False"
-fi
-
-if docker secret inspect alphard_csrf_cookie_secure >/dev/null 2>&1; then
-    docker secret rm alphard_csrf_cookie_secure >/dev/null
-fi
-
-if docker secret inspect alphard_session_cookie_secure >/dev/null 2>&1; then
-    docker secret rm alphard_session_cookie_secure >/dev/null
-fi
-
-printf "%s" "$csrf_cookie_secure" | docker secret create alphard_csrf_cookie_secure - >/dev/null
-printf "%s" "$session_cookie_secure" | docker secret create alphard_session_cookie_secure - >/dev/null
-
+read_secret "alphard_enable_ssl" "Enforce HTTPS and HSTS" "True"
 read_secret "alphard_secret_key" "" "" true
 read_secret "alphard_allowed_hosts" "Enter comma-separated list of domains allowed to serve the application"
 read_secret "alphard_db_password" "" "" true

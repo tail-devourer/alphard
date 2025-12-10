@@ -58,6 +58,9 @@ celerybeat.pid
 env/
 venv/
 
+# Tailwind
+theme/static_src/node_modules
+
 # IDEs & Code Editors
 .idea/
 .vscode/

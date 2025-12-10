@@ -33,30 +33,7 @@ function Read-Secret {
 
 docker swarm init | Out-Null
 
-$prod = Read-Host "Is this a prod or test deployment (default: prod)"
-$prod = $prod.Trim().ToLower()
-
-if ($prod -in @("", "prod", "production")) {
-    $csrf_cookie_secure = "True"
-    $session_cookie_secure = "True"
-} else {
-    $csrf_cookie_secure = "False"
-    $session_cookie_secure = "False"
-}
-
-docker secret inspect alphard_csrf_cookie_secure 2>$null | Out-Null
-if ($LASTEXITCODE -eq 0) {
-    docker secret rm alphard_csrf_cookie_secure | Out-Null
-}
-
-docker secret inspect alphard_session_cookie_secure 2>$null | Out-Null
-if ($LASTEXITCODE -eq 0) {
-    docker secret rm alphard_session_cookie_secure | Out-Null
-}
-
-$csrf_cookie_secure | docker secret create alphard_csrf_cookie_secure - | Out-Null
-$session_cookie_secure | docker secret create alphard_session_cookie_secure - | Out-Null
-
+Read-Secret -name "alphard_enable_ssl" -prompt "Enforce HTTPS and HSTS" -default "True"
 Read-Secret -name "alphard_secret_key" -autoGenerate
 Read-Secret -name "alphard_allowed_hosts" -prompt "Enter comma-separated list of domains allowed to serve the application"
 Read-Secret -name "alphard_db_password" -autoGenerate

@@ -4,6 +4,7 @@ x-django-common: &django-common
     NPM_BIN_PATH: "/usr/bin/npm"
     DEBUG: "False"
     SECRET_KEY_FILE: /run/secrets/alphard_secret_key
+    ENABLE_SSL: /run/secrets/alphard_enable_ssl
     ALLOWED_HOSTS_FILE: /run/secrets/alphard_allowed_hosts
 
     DB_PASSWORD_FILE: /run/secrets/alphard_db_password
@@ -22,9 +23,6 @@ x-django-common: &django-common
     DEFAULT_FROM_EMAIL_FILE: /run/secrets/alphard_default_from_email
     ADMINS_FILE: /run/secrets/alphard_admins
     SERVER_EMAIL_FILE: /run/secrets/alphard_server_email
-
-    CSRF_COOKIE_SECURE_FILE: /run/secrets/alphard_csrf_cookie_secure
-    SESSION_COOKIE_SECURE_FILE: /run/secrets/alphard_session_cookie_secure
   secrets:
     - alphard_secret_key
     - alphard_allowed_hosts
@@ -38,8 +36,7 @@ x-django-common: &django-common
     - alphard_default_from_email
     - alphard_admins
     - alphard_server_email
-    - alphard_csrf_cookie_secure
-    - alphard_session_cookie_secure
+    - alphard_enable_ssl
   deploy:
     replicas: 1
   networks:
@@ -124,9 +121,7 @@ secrets:
     external: true
   alphard_server_email:
     external: true
-  alphard_csrf_cookie_secure:
-    external: true
-  alphard_session_cookie_secure:
+  alphard_enable_ssl:
     external: true
 
 networks:

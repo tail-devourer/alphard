@@ -308,8 +308,7 @@ The following environment variables control core application behavior. Defaults 
 | **REDIS_URL** | Redis URL used for non-Celery background functionality (rate limiting, misc tasks). | redis://localhost:6379/1 |
 | **CELERY_BROKER_URL** | Celery message broker URL. | redis://localhost:6379/2 |
 | **CELERY_RESULT_BACKEND** | Celery results backend URL. | redis://localhost:6379/3 |
-| **CSRF_COOKIE_SECURE** | Forces CSRF cookies to be sent only over HTTPS. (Production Only) | True |
-| **SESSION_COOKIE_SECURE** | Forces session cookies to be sent only over HTTPS. (Production Only) | True |
+| **ENABLE_SSL** | Enforces HTTPS, secures cookies, and enables HSTS. | True |
 | **EMAIL_HOST** | SMTP server hostname. | sandbox.smtp.mailtrap.io |
 | **EMAIL_PORT** | SMTP server port. | 587 |
 | **EMAIL_USE_TLS** | Enables TLS for outgoing email connections. | True |

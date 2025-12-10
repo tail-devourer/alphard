@@ -69,11 +69,17 @@ ALLOWED_HOSTS = get_secret('ALLOWED_HOSTS', cast=list, default=[])
 # not relying on Docker. For testing purposes before full deployment, it's important to
 # disable cookie security as cookies would not be sent back to the server otherwise.
 if not DEBUG:
-    CSRF_COOKIE_SECURE = get_secret("CSRF_COOKIE_SECURE", cast=bool, default=True)
-    SESSION_COOKIE_SECURE = get_secret("SESSION_COOKIE_SECURE", cast=bool, default=True)
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    if get_secret("ENABLE_SSL", cast=bool, default=True):
+        SECURE_SSL_REDIRECT = True
+        CSRF_COOKIE_SECURE = True
+        SESSION_COOKIE_SECURE = True
+
+        SECURE_HSTS_SECONDS = 31536000
+        SECURE_HSTS_PRELOAD = True
 
 # Application definition
 
