@@ -1,6 +1,7 @@
 from django.views import View
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ProfileView(View):
@@ -12,3 +13,11 @@ class ProfileView(View):
         return render(request, "profile.html", {
             "user": user,
         })
+
+
+class SettingsView(LoginRequiredMixin, View):
+    login_url = "home"
+    redirect_field_name = None
+
+    def get(self, request):
+        return render(request, "settings.html", {})

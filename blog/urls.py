@@ -17,4 +17,5 @@ urlpatterns = [
 
     # User
     path('u/<username>', user.ProfileView.as_view(), name='profile'),
+    path('user/settings', user.SettingsView.as_view(), name='user_settings')
 ]
