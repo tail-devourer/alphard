@@ -4,4 +4,65 @@
 
 {% block content %}
   {% include "navbar.html" %}
+
+  <div class="px-16 py-10 md:px-32">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="md:col-span-2">
+        <div class="flex flex-col md:flex-row items-center md:px-10 pb-5">
+          <div class="avatar pb-10 md:pb-0 md:pr-10">
+            <img
+              src="{{ request.user.avatar.url }}"
+              alt="{{ request.user.full_name|default:request.user.username }}"
+              class="w-56 h-56 object-cover rounded-full ring-3 ring-offset-3 ring-neutral-200"
+            >
+          </div>
+          <div class="w-full md:flex-1 flex flex-col gap-y-2">
+            <input type="file" name="avatar" class="w-full file-input">
+            <button class="w-full btn btn-neutral">Apply</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-y-2">
+        <div class="text-2xl pb-2">
+          Personal Info
+        </div>
+        <label class="input w-full">
+          <span class="label w-26">Name</span>
+          <input name="full_name" value="{{ request.user.full_name }}">
+        </label>
+        <label class="input w-full">
+          <span class="label w-26">Email</span>
+          <input name="email" value="{{ request.user.email }}">
+        </label>
+        <label class="input w-full">
+          <span class="label w-26">Username</span>
+          <input name="username" value="{{ request.user.username }}">
+        </label>
+        <div class="pt-2">
+          <button type="submit" class="w-full btn btn-neutral">Update</button>
+        </div>
+      </div>
+      <div class="flex flex-col gap-y-2">
+        <div class="text-2xl pb-2">
+          Security
+        </div>
+        <label class="input w-full">
+          <span class="label w-44">Current Password</span>
+          <input type="password" name="old_password" autocomplete="current-password">
+        </label>
+        <label class="input w-full ">
+          <span class="label w-44">New Password</span>
+          <input type="password" name="password1" autocomplete="new-password">
+        </label>
+        <label class="input w-full ">
+          <span class="label w-44">Confirm Password</span>
+          <input type="password" name="password2" autocomplete="new-password">
+        </label>
+        <div class="pt-2">
+          <button type="submit" class="w-full btn btn-neutral">Change Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
