@@ -18,8 +18,8 @@ class CustomUserAdmin(UserAdmin):
             "fields": ("full_name", "username", "email", "usable_password", "password1", "password2"),
         }),
     )
-    list_display = ("username", "email", "full_name", "is_staff")
-    search_fields = ("username", "full_name", "email")
+    list_display = ("id", "username", "email", "full_name", "is_staff")
+    search_fields = ("id", "username", "full_name", "email")
 
 
 admin.site.unregister(Group)
