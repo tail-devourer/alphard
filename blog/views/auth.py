@@ -8,6 +8,8 @@ from django.utils.encoding import force_bytes
 from ..forms import CustomUserCreationForm, PasswordResetForm, PasswordResetConfirmForm
 from ..tasks import send_mail
 
+User = get_user_model()
+
 
 class SignInView(View):
 
@@ -74,7 +76,6 @@ class GetStartedDoneView(View):
         if not email:
             return redirect("get_started")
 
-        User = get_user_model()
         email = User.objects.normalize_email(email)
 
         try:
@@ -112,8 +113,6 @@ class ConfirmUserView(View):
 
     def get(self, request, uid, token):
         request.session.pop("email", None)
-
-        User = get_user_model()
 
         try:
             pk = urlsafe_base64_decode(uid).decode()
@@ -160,7 +159,6 @@ class PasswordResetDoneView(View):
         if not email:
             return redirect("request_password_reset")
 
-        User = get_user_model()
         email = User.objects.normalize_email(email)
 
         try:
@@ -200,8 +198,6 @@ class PasswordResetConfirmView(View):
         if request.user.is_authenticated:
             return redirect("home")
 
-        User = get_user_model()
-
         try:
             pk = urlsafe_base64_decode(uid).decode()
             user = User.objects.get(pk=pk)
@@ -217,8 +213,6 @@ class PasswordResetConfirmView(View):
 
     def post(self, request, uid, token):
         request.session.pop("email", None)
-
-        User = get_user_model()
 
         try:
             pk = urlsafe_base64_decode(uid).decode()

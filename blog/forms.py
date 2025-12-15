@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import User
+
+User = get_user_model()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -16,8 +17,6 @@ class PasswordResetForm(forms.Form):
     email = forms.EmailField(max_length=254)
 
     def clean(self):
-        User = get_user_model()
-
         cleaned_data = super().clean()
         email = User.objects.normalize_email(cleaned_data.get("email"))
 
