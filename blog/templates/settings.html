@@ -4,4 +4,87 @@
 
 {% block content %}
   {% include "navbar.html" %}
+
+  <div class="pt-2 lg:px-32 flex flex-col md:flex-row">
+    <div class="flex-none">
+      {% include "settings-side-panel.html" %}
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="w-full flex flex-col gap-12 p-10">
+      {% csrf_token %}
+      <div class="flex flex-col xl:flex-row xl:items-center gap-8">
+        <div class="flex-none avatar">
+          <img
+            src="{{ request.user.avatar.url }}"
+            alt="{{ form.full_name.value|default:form.username.value }}"
+            class="w-48 h-48 object-cover rounded-full ring-2 ring-offset-2 ring-neutral-200"
+          >
+        </div>
+        <div class="flex flex-col gap-2">
+          <input type="file" name="avatar" accept="image/*" class="w-92 file-input">
+          {% for error in form.avatar.errors %}
+            <div class="w-92 alert alert-error">
+              {% include "icons/error.svg" %}
+              {{ error }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="input w-92">
+          <span class="label w-32">Name</span>
+          <input name="full_name" value="{{ form.full_name.value }}" autocomplete="name" maxLength="150">
+        </label>
+        {% for error in form.full_name.errors %}
+          <div class="w-92 alert alert-error">
+            {% include "icons/error.svg" %}
+            {{ error }}
+          </div>
+        {% endfor %}
+
+        <label class="input w-92">
+          <span class="label w-24">Username</span>
+          <div class="tooltip">
+            <div class="tooltip-content text-xs">
+              {{ form.username.help_text }}
+            </div>
+            <input name="username" value="{{ form.username.value }}" autocomplete="username" maxLength="150" required>
+          </div>
+        </label>
+        {% for error in form.username.errors %}
+          <div class="w-92 alert alert-error">
+            {% include "icons/error.svg" %}
+            {{ error }}
+          </div>
+        {% endfor %}
+
+        <label class="input w-92">
+          <span class="label w-32">Email</span>
+          <input name="email" value="{{ form.email.value }}" autocomplete="email" maxLength="254" required>
+        </label>
+        {% for error in form.email.errors %}
+          <div class="w-92 alert alert-error">
+            {% include "icons/error.svg" %}
+            {{ error }}
+          </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+          <div class="flex flex-col space-y-1">
+            {% for error in form.non_field_errors %}
+              <div class="w-92 alert alert-error">
+                {% include "icons/error.svg" %}
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="pt-4">
+          <button type="submit" class="btn btn-neutral w-32">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
 {% endblock %}

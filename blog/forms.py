@@ -52,3 +52,10 @@ class PasswordResetConfirmForm(forms.Form):
                     self.add_error(None, err)
 
         return cleaned_data
+
+
+class PersonalInfoUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ("avatar", "full_name", "username", "email")
