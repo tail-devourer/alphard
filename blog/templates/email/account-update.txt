@@ -1,0 +1,7 @@
+{% if full_name %}Hi {{ full_name }},{% else %}Hi,{% endif %}
+
+{% if new_username %}The username for your account was changed from {{ old_username }} to {{ new_username }}.{% endif %}{% if new_email %}{% if new_username %} Also, the{%else%}The{% endif %} email address for your account was changed to {{ new_email }}.{% endif %}
+
+If you did not make this change, please contact the site administrators immediately.
+
+Thank you,
