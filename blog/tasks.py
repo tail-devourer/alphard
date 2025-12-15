@@ -12,7 +12,7 @@ def send_mail(to, subject, template_name, html_template_name, context):
         subject=subject,
         body=text_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[to],
+        to=to,
     )
     msg.attach_alternative(html_body, "text/html")
     msg.send()

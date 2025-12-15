@@ -90,7 +90,7 @@ class GetStartedDoneView(View):
         )
 
         send_mail.delay(
-            to=user.email,
+            to=[user.email],
             subject="Confirm your email",
             template_name="email/confirm-email.txt",
             html_template_name="email/confirm-email.html",
@@ -173,7 +173,7 @@ class PasswordResetDoneView(View):
         )
 
         send_mail.delay(
-            to=user.email,
+            to=[user.email],
             subject="Reset Password",
             template_name="email/reset-password.txt",
             html_template_name="email/reset-password.html",
