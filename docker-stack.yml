@@ -2,6 +2,7 @@ x-django-common: &django-common
   image: alphard:latest
   environment:
     NPM_BIN_PATH: "/usr/bin/npm"
+    DJANGO_LOG_LEVEL: "INFO"
     DEBUG: "False"
     SECRET_KEY_FILE: /run/secrets/alphard_secret_key
     ENABLE_SSL: /run/secrets/alphard_enable_ssl

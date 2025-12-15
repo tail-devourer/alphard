@@ -1,3 +1,4 @@
+import logging
 from django.views import View
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
@@ -51,9 +52,13 @@ class SettingsView(LoginRequiredMixin, View):
             if email_changed:
                 context["new_email"] = new_email
 
+                logging.info(f"The account details updated for user {request.user.pk}. Email changed from {old_email} to {new_email}.")
+
             if username_changed:
                 context["old_username"] = old_username
                 context["new_username"] = new_username
+
+                logging.info(f"The account details updated for user {request.user.pk}. Username changed from {old_username} to {new_username}.")
 
             if email_changed or username_changed:
                 send_mail.delay(
