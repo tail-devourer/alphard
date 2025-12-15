@@ -17,6 +17,8 @@ from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 from environ import NoValue
 import environ
+import logging
+import logging.config
 
 env = environ.Env(
     DEBUG=(bool, True)
@@ -26,6 +28,22 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 environ.Env.read_env(BASE_DIR / '.env')
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": env("DJANGO_LOG_LEVEL", default="WARNING"),
+    },
+}
+
+logging.config.dictConfig(LOGGING)
 
 NOTSET = NoValue()
 
@@ -38,9 +56,9 @@ def get_secret(var, cast=None, default=NOTSET, parse_default=False):
 
         return env.parse_value(value, cast)
     except ImproperlyConfigured as e:
-        print(f"{var}_FILE environment variable is not set. Falling back to {var}...")
+        logging.info(f"{var}_FILE environment variable is not set. Falling back to {var}...")
     except FileNotFoundError as e:
-        print(f"{var}_FILE environment variable points to a missing file. Falling back to {var}...")
+        logging.warning(f"{var}_FILE environment variable points to a missing file. Falling back to {var}...")
 
     return env(var, cast=cast, default=default, parse_default=parse_default)
 

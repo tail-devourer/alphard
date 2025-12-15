@@ -290,11 +290,12 @@ The project is provided as open source. If you deploy it, you are responsible fo
 
 ## Environment Variables
 
-The following environment variables control core application behavior. Defaults are development-oriented. For sensitive values, each also supports a _FILE variant to read the value from a file (except NPM_BIN_PATH and DEBUG). For any production setup outside Docker, update these values accordingly.
+The following environment variables control core application behavior. Defaults are development-oriented. For sensitive values, each also supports a _FILE variant to read the value from a file (except DJANGO_LOG_LEVEL, NPM_BIN_PATH and DEBUG). For any production setup outside Docker, update these values accordingly.
 
 | Variable | Description | Default |
 | --- | --- | --- |
 | **NPM_BIN_PATH** | Path to the npm executable. Required for Django Tailwind. | C:\Program Files\nodejs\npm.cmd |
+| **DJANGO_LOG_LEVEL** | Logging verbosity level for Django’s logger. | WARNING |
 | **DEBUG** | Enables Django debug mode. Must be `False` in production. | True |
 | **SECRET_KEY** | Primary Django secret key used for signing. Must be unique and unpredictable in production. | django-insecure-... |
 | **SECRET_KEY_FALLBACKS** | Comma-separated list of previously used secret keys for rotation. | [] |
