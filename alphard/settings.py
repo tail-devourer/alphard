@@ -153,9 +153,9 @@ EMAIL_HOST_USER = env('EMAIL_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 
-ADMINS = env.list("ADMINS", default=[])
-MANAGERS = env.list("MANAGERS", default=[])
-SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
+ADMINS = env.list('ADMINS', default=[])
+MANAGERS = env.list('MANAGERS', default=[])
+SERVER_EMAIL = env('SERVER_EMAIL', default='root@localhost')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
