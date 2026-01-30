@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tailwind',
     'theme',
+    'auth',
 ]
 
 MIDDLEWARE = [
@@ -181,3 +182,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+# Authentication
+# https://docs.djangoproject.com/en/6.0/topics/auth/customizing/
+
+AUTH_USER_MODEL = 'auth.CustomUser'
