@@ -12,6 +12,7 @@ For deployment best practices and security checklist, see
 https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 """
 
+import sys
 import environ
 from pathlib import Path
 
@@ -26,11 +27,25 @@ environ.Env.read_env(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY_FALLBACKS = env.list('SECRET_KEY_FALLBACKS', default=[])
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+
+if sys.platform == 'win32':
+    NPM_BIN_PATH = env('NPM_BIN_PATH', default=r'C:\\Program Files\\nodejs\\npm.cmd')
+else:
+    NPM_BIN_PATH = env('NPM_BIN_PATH', default='/usr/bin/npm')
+
+if not DEBUG:
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    CSRF_COOKIE_SECURE = env.bool('ENABLE_SSL', default=True)
+    SESSION_COOKIE_SECURE = env.bool('ENABLE_SSL', default=True)
 
 # Application definition
 
@@ -94,6 +109,21 @@ DATABASES = {
     }
 }
 
+# Cache
+# https://docs.djangoproject.com/en/6.0/topics/cache/
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': env('REDIS_CACHE_URL', default='redis://localhost:6379/0'),
+    }
+}
+
+# Sessions
+# https://docs.djangoproject.com/en/6.0/topics/http/sessions/
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -112,6 +142,21 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Email
+# https://docs.djangoproject.com/en/6.0/topics/email/
+
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
+EMAIL_HOST_USER = env('EMAIL_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
+
+ADMINS = env.list("ADMINS", default=[])
+MANAGERS = env.list("MANAGERS", default=[])
+SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
@@ -126,12 +171,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Redis
 
-REDIS_URL = env('REDIS_URL', default='redis://localhost:6379/0')
+REDIS_URL = env('REDIS_URL', default='redis://localhost:6379/1')
 
 # Celery
 
-CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/2')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://localhost:6379/3')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
