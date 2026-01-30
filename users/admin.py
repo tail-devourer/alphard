@@ -6,7 +6,7 @@ from .models import CustomUser, CustomGroup
 
 
 class CustomUserAdmin(UserAdmin):
-    """fieldsets = (
+    fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('full_name', 'avatar')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
@@ -15,12 +15,11 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('full_name', 'username', 'email', 'usable_password', 'password1', 'password2'),
+            'fields': ('full_name', 'username', 'email', 'password1', 'password2'),
         }),
     )
-    list_display = ('id', 'username', 'email', 'full_name', 'is_staff')
-    search_fields = ('id', 'username', 'full_name', 'email')"""
-    pass
+    list_display = ('username', 'email', 'full_name', 'is_staff')
+    search_fields = ('username', 'full_name', 'email')
 
 
 admin.site.unregister(Group)

@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tailwind',
     'theme',
-    'auth',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -186,4 +186,4 @@ CELERY_TIMEZONE = TIME_ZONE
 # Authentication
 # https://docs.djangoproject.com/en/6.0/topics/auth/customizing/
 
-AUTH_USER_MODEL = 'auth.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'
