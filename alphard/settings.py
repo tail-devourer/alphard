@@ -110,6 +110,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Redis
+
+REDIS_URL = 'redis://localhost:6379/0'
+
 # Celery
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
