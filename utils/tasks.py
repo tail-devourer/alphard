@@ -14,5 +14,5 @@ def send_mail(to, subject, template_name, html_template_name, context):
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=to,
     )
-    msg.attach_alternative(html_body, "text/html")
+    msg.attach_alternative(html_body, 'text/html')
     msg.send()
