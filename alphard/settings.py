@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'theme',
     'utils',
     'users',
+    'blog',
 ]
 
 MIDDLEWARE = [
