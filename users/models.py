@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     full_name = models.CharField(_('full name'), max_length=150, blank=True)
     avatar = models.ImageField(default='default.jpg')
     email = models.EmailField(_('email address'), unique=True)
+    email_verified_at = models.DateTimeField(_('email verified at'), blank=True, null=True)
 
     def get_full_name(self):
         return self.full_name.strip()
