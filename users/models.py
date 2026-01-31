@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
     first_name = None
     last_name = None
     full_name = models.CharField(_('full name'), max_length=150, blank=True)
-    avatar = models.ImageField(default='default.jpg')
+    avatar = models.ImageField(_('avatar'), default='default.jpg')
     email = models.EmailField(_('email address'), unique=True)
     email_verified_at = models.DateTimeField(_('email verified at'), blank=True, null=True)
 
