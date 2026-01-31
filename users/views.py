@@ -1,9 +1,7 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import login
 from .forms import CustomUserCreationForm
-
-User = get_user_model()
 
 
 class GetStartedView(View):
