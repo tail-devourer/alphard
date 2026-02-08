@@ -44,8 +44,8 @@ if not DEBUG:
     USE_X_FORWARDED_PORT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-    CSRF_COOKIE_SECURE = env.bool('ENABLE_SSL', default=True)
-    SESSION_COOKIE_SECURE = env.bool('ENABLE_SSL', default=True)
+    CSRF_COOKIE_SECURE = env.bool('SECURE_COOKIES', default=True)
+    SESSION_COOKIE_SECURE = env.bool('SECURE_COOKIES', default=True)
 
 # Application definition
 
