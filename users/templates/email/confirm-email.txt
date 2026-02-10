@@ -1,0 +1,9 @@
+{% if full_name %}Hi {{ full_name }},{% else %}Hi,{% endif %}
+
+We’re glad to have you here. Before you can begin, please confirm your email address by using the link below:
+
+{{ confirmation_url }}
+
+If this message reached you in error, feel free to disregard it.
+
+Thank you,
