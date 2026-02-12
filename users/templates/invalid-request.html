@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Invalid Request - Alphard{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center h-screen">
+<div class="card shadow-lg border border-gray-100">
+<div class="card-body text-center">
+    {% include "components/icons/error.svg" with size="250px" stroke="#ff9282" %}
+    <div class="text-lg">
+    The link is no longer valid
+    </div>
+    <a href="{% url 'home' %}" class="mt-4 btn w-full">Return Home</a>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,9 +1,14 @@
 from django.views import View
+from django.utils import timezone
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import login, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.tokens import default_token_generator
 from .mixins import AccountActionEmailDispatcher
 from .forms import CustomUserCreationForm
+
+User = get_user_model()
 
 
 class SignInView(View):
@@ -63,4 +68,19 @@ class GetStartedView(View, AccountActionEmailDispatcher):
 
 
 class ConfirmEmailView(View):
-    pass
+
+    def get(self, request, uid, token):
+        try:
+            pk = urlsafe_base64_decode(uid).decode()
+            user = User.objects.get(pk=pk)
+
+            if not default_token_generator.check_token(user, token):
+                raise ValueError
+        except (ValueError, User.DoesNotExist):
+            return render(request, 'invalid-request.html', {})
+
+        if not user.email_verified_at:
+            user.email_verified_at = timezone.now()
+            user.save()
+
+        return redirect('home')
