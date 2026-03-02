@@ -1,6 +1,6 @@
 from django.views import View
 from django.utils import timezone
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
@@ -84,3 +84,13 @@ class ConfirmEmailView(View):
             user.save()
 
         return redirect('home')
+
+
+class ProfileView(View):
+
+    def get(self, request, username):
+        user = get_object_or_404(User, username=username)
+
+        return render(request, 'profile.html', {
+            'user': user,
+        })
