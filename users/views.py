@@ -6,7 +6,7 @@ from django.contrib.auth import login, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.tokens import default_token_generator
 from .mixins import AccountActionEmailDispatcher
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, PasswordResetForm
 
 User = get_user_model()
 
@@ -64,6 +64,29 @@ class GetStartedView(View, AccountActionEmailDispatcher):
 
         return render(request, 'get-started.html', {
             'form': form,
+        })
+
+
+class ForgotPasswordView(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('home')
+
+        return render(request, 'forgot-password.html', {
+            'form': PasswordResetForm(),
+        })
+
+    def post(self, request):
+        form = PasswordResetForm(data=request.POST)
+        success = False
+
+        if form.is_valid():
+            success = True
+
+        return render(request, 'forgot-password.html', {
+            'form': form,
+            'success': success,
         })
 
 

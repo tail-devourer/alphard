@@ -38,6 +38,7 @@
                 class="input"
                 required
             />
+            <a href="{% url 'forgot_password' %}" class="text-sm text-center">Forgot Password?</a>
             {% for error in form.password.errors %}
             <div class="alert alert-error">
                 {% include "components/icons/error.svg" %}

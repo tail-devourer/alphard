@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% endblock %}
+{% block title %}{{ user.full_name|default:user.username }} - Alphard{% endblock %}
 
 {% block content %}
     {% include "components/navbar.html" %}
