@@ -67,7 +67,11 @@ class GetStartedView(View, AccountActionEmailDispatcher):
         })
 
 
-class ForgotPasswordView(View):
+class ForgotPasswordView(View, AccountActionEmailDispatcher):
+    email_reverse = 'reset_password'
+    email_subject = 'Reset your password'
+    email_template = 'email/reset-password.txt'
+    email_html_template = 'email/reset-password.html'
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -82,7 +86,14 @@ class ForgotPasswordView(View):
         success = False
 
         if form.is_valid():
-            success = True
+            user = User.objects.get(email=form.cleaned_data['email'])
+            success = self.send_mail(
+                request=request,
+                user=user,
+            )
+
+            if not success:
+                form.add_error(field=None, error='Too many requests. Please wait before trying again.')
 
         return render(request, 'forgot-password.html', {
             'form': form,
@@ -107,6 +118,10 @@ class ConfirmEmailView(View):
             user.save()
 
         return redirect('home')
+
+
+class ResetPasswordView(View):
+    pass
 
 
 class ProfileView(View):
