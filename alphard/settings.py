@@ -10,32 +10,39 @@ For deployment best practices and security checklist, see
 https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 """
 import sys
+import environ
 from pathlib import Path
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(BASE_DIR / '.env')
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u0zgto76pghj1s$4pfw#9eb!2#nz3e+6$6gcd_ch$8&o(6nw^j'
-SECRET_KEY_FALLBACKS = []
+SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY_FALLBACKS = env.list('SECRET_KEY_FALLBACKS', default=[])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 if sys.platform == 'win32':
-    NPM_BIN_PATH = r'C:\\Program Files\\nodejs\\npm.cmd'
+    NPM_BIN_PATH = env('NPM_BIN_PATH', default=r'C:\\Program Files\\nodejs\\npm.cmd')
 else:
-    NPM_BIN_PATH = '/usr/bin/npm'
+    NPM_BIN_PATH = env('NPM_BIN_PATH', default='/usr/bin/npm')
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
 
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=True)
+    SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
 
 # Application definition
 
@@ -92,11 +99,11 @@ WSGI_APPLICATION = 'alphard.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'alphard',
-        'USER': 'alphard',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT': 5432,
+        'NAME': env('DB_NAME', default='alphard'),
+        'USER': env('DB_USER', default='alphard'),
+        'PASSWORD': env('DB_PASS'),
+        'HOST': env('DB_HOST', default='127.0.0.1'),
+        'PORT': env.int('DB_PORT', default=5432),
     }
 }
 
@@ -106,7 +113,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/0',
+        'LOCATION': env('CACHE_LOCATION', default='redis://127.0.0.1:6379/0'),
     }
 }
 
@@ -117,7 +124,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Redis
 
-REDIS_URL = 'redis://127.0.0.1:6379/1'
+REDIS_URL = env('REDIS_URL', default='redis://127.0.0.1:6379/1')
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -139,24 +146,24 @@ USE_TZ = True
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/2'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/3'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://127.0.0.1:6379/2')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://127.0.0.1:6379/3')
 CELERY_TIMEZONE = TIME_ZONE
 
 # Email
 # https://docs.djangoproject.com/en/6.0/topics/email/
 
-EMAIL_HOST = ''
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-SERVER_EMAIL = 'root@localhost'
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+SERVER_EMAIL = env('SERVER_EMAIL')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
-MANAGERS = []
-ADMINS = []
+MANAGERS = env.list('MANAGERS', default=[])
+ADMINS = env.list('ADMINS', default=[])
 
 # Static files
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -169,3 +176,7 @@ STATIC_URL = 'static/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'media/'
+
+# Authentication
+# https://docs.djangoproject.com/en/6.0/topics/auth/customizing/
+AUTH_USER_MODEL = 'blog.CustomUser'
