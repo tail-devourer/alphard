@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-u0zgto76pghj1s$4pfw#9eb!2#nz3e+6$6gcd_ch$8&o(6nw^j'
+SECRET_KEY_FALLBACKS = []
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -119,4 +120,33 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+STATIC_ROOT = None
 STATIC_URL = 'static/'
+
+MEDIA_URL = ''
+MEDIA_ROOT = ''
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+CACHES = {
+    'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+    'LOCATION': 'redis://127.0.0.1:6379/0',
+}
+
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+SERVER_EMAIL = 'root@localhost'
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+
+MANAGERS = []
+ADMINS = [] # list[str]
