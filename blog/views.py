@@ -1,5 +1,7 @@
+from django.views import View
 from django.shortcuts import render
-from django.http import HttpResponse
 
-def home(request):
-    return HttpResponse('Hello, World!')
+class HomeView(View):
+
+    def get(self, request):
+        return render(request, 'home.html', {})

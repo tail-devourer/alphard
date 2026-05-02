@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 For deployment best practices and security checklist, see
 https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 """
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,6 +23,11 @@ SECRET_KEY_FALLBACKS = []
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+if sys.platform == 'win32':
+    NPM_BIN_PATH = r'C:\\Program Files\\nodejs\\npm.cmd'
+else:
+    NPM_BIN_PATH = '/usr/bin/npm'
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -40,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tailwind',
+    'theme',
     'blog',
 ]
 
@@ -53,7 +61,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ["django_browser_reload"]
+    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+
 ROOT_URLCONF = 'alphard.urls'
+
+TAILWIND_APP_NAME = 'theme'
 
 TEMPLATES = [
     {
