@@ -41,8 +41,8 @@ if not DEBUG:
     USE_X_FORWARDED_HOST = True
     USE_X_FORWARDED_PORT = True
 
-    CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=True)
-    SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
+    CSRF_COOKIE_SECURE = env.bool('ENABLE_SSL', default=True)
+    SESSION_COOKIE_SECURE = env.bool('ENABLE_SSL', default=True)
 
 # Application definition
 
