@@ -90,14 +90,20 @@ DATABASES = {
 # https://docs.djangoproject.com/en/6.0/topics/cache/
 
 CACHES = {
-    'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-    'LOCATION': 'redis://127.0.0.1:6379/0',
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/0',
+    }
 }
 
 # Sessions
 # https://docs.djangoproject.com/en/6.0/topics/http/sessions/
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+# Redis
+
+REDIS_URL = 'redis://127.0.0.1:6379/1'
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
