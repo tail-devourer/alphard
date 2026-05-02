@@ -123,6 +123,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Celery
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/2'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/3'
+CELERY_TIMEZONE = TIME_ZONE
+
 # Email
 # https://docs.djangoproject.com/en/6.0/topics/email/
 
