@@ -164,3 +164,13 @@ cython_debug/
 
 # VSCode
 .vscode/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+docs/
+LICENSE
+README.md
+requirements.dev.txt
