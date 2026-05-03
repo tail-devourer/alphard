@@ -159,6 +159,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Tailwind
+theme/static_src/node_modules
+
 # PyCharm
 .idea/
 
