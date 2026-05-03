@@ -1,6 +1,6 @@
 # Alphard
 
-Alphard is a blogging platform built as a learning project focused on Django and Docker. The instructions below apply to development setups. For Docker-based deployments, run deploy.py from the repository root. The script handles environment setup, secret generation, and stack deployment interactively.
+Alphard is a blogging platform built as a learning project focused on Django and Docker. The instructions below apply to development setups. For Docker-based deployments, run `deploy.py` from the repository root. The script handles environment setup, secret generation, and stack deployment interactively.
 
 The project is provided as open source. If you deploy it, you are responsible for verifying your configuration, ensuring security, and resolving any issues that arise.
 
